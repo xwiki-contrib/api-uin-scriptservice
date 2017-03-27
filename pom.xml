@@ -24,6 +24,10 @@
     <url>https://github.com/xwiki-contrib/api-uin-scriptservice.git</url>
     <tag>HEAD</tag>
   </scm>
+  <issueManagement>
+    <system>jira</system>
+    <url>http://jira.xwiki.org/jira/browse/UINSCRIPT</url>
+  </issueManagement>
   <developers>
     <developer>
       <id>dgervalle</id>

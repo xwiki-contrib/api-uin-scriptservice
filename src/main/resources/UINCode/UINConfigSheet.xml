@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+
+<xwikidoc reference="UINCode.UINConfigSheet" locale="">
+  <web>UINCode</web>
+  <name>UINConfigSheet</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <parent>UINCode.WebHome</parent>
+  <creator>xwiki:XWiki.Admin</creator>
+  <author>xwiki:XWiki.Admin</author>
+  <customClass/>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <creationDate>1485270335000</creationDate>
+  <date>1485270335000</date>
+  <contentUpdateDate>1485270335000</contentUpdateDate>
+  <version>1.1</version>
+  <title/>
+  <defaultTemplate/>
+  <validationScript/>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.1</syntaxId>
+  <hidden>true</hidden>
+  <content>This is the actual state and the configuration of the UIN Script Service.
+
+{{velocity}}
+
+{{warning}}
+#if ($xcontext.action == 'view')
+  To update safely the configuration, please use the form below or the provided script service.
+  Please, avoid using direct edition of the configuration.
+
+#end
+  **Incorrectly changing the Current UIN to a lower number than its current state might seriously affect your data storage**
+  Please only change it when you know what you are doing.
+{{/warning}}
+
+#if ($request.action == 'Update' &amp;&amp; $services.security.authorization.hasAccess('admin', $confDoc.documentReference) &amp;&amp; ($xcontext.action == 'view' || $xcontext.action == 'admin'))
+  #try()
+    #set ($integer = 1)
+    #set ($long = $integer.longValue())
+    #set ($currentUIN = $long.parseLong($request.get('previousUIN')))
+    #set ($newUIN = $long.parseLong($request.get('currentUIN')))
+    #set ($increment = $long.parseLong($request.get('increment')))
+    #if ("$currentUIN" != "" &amp;&amp; "$newUIN" != "" &amp;&amp; "$increment" != "")
+      #set ($discard = $services.uin.updateConfig($currentUIN, $newUIN, $increment))
+    #end
+  #end
+  #if ("$!exception" != '')
+
+    #if ($exception.getCause().class.getName() == 'java.util.ConcurrentModificationException')
+      {{error}}
+        Concurrent modification of UIN detected, cannot proceed with update. Please retry.
+      {{/error}}
+    #elseif ($exception.getCause().class.getName() != 'java.lang.NumberFormatException')
+      {{html}}
+        #displayUnhandledException($exception)
+      {{/html}}
+    #end
+  #end
+#end
+#set($confDoc = $xwiki.getDocument('UINCode.UINConfig'))
+#set($obj = $confDoc.getObject('UINCode.UINConfigClass'))
+#set($class = $obj.xWikiClass)
+#if ($services.security.authorization.hasAccess('admin', $confDoc.documentReference) &amp;&amp; ($xcontext.action == 'view' || $xcontext.action == 'admin'))
+{{html}}
+&lt;form class="xform" action="#" method="POST"&gt;
+&lt;input type="hidden" name="previousUIN" value="$obj.getValue('currentUIN')" /&gt;
+&lt;dl&gt;
+#foreach($prop in $class.properties)
+  &lt;dt&gt;&lt;label for="$prop.name"&gt;$prop.prettyName&lt;/label&gt;&lt;span class="xHint"&gt;$prop.tooltip&lt;/span&gt;&lt;/dt&gt;
+  &lt;dd&gt;$confDoc.displayEdit($prop, '', $obj)&lt;/dd&gt;
+#end
+&lt;/dl&gt;
+&lt;div class="button-wrapper"&gt;
+  &lt;input class="button" name="action" type="submit" value="Update" /&gt;
+&lt;/div&gt;
+&lt;/form&gt;
+{{/html}}
+#else
+  #foreach($prop in $class.properties)
+    ; $prop.prettyName
+    : $confDoc.display($prop.getName())
+  #end
+#end
+{{/velocity}}</content>
+</xwikidoc>

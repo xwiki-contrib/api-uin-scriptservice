@@ -1,0 +1,449 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+
+<xwikidoc reference="UINCode.UINScriptService" locale="">
+  <web>UINCode</web>
+  <name>UINScriptService</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <parent>UINCode.WebHome</parent>
+  <creator>xwiki:XWiki.Admin</creator>
+  <author>xwiki:XWiki.Admin</author>
+  <customClass/>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <creationDate>1485270335000</creationDate>
+  <date>1485270335000</date>
+  <contentUpdateDate>1485270335000</contentUpdateDate>
+  <version>1.1</version>
+  <title>UIN Script Service Implementation</title>
+  <defaultTemplate/>
+  <validationScript/>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.1</syntaxId>
+  <hidden>true</hidden>
+  <object>
+    <class>
+      <name>XWiki.ComponentClass</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <roleHint>
+        <disabled>0</disabled>
+        <name>roleHint</name>
+        <number>2</number>
+        <prettyName>Component Role Hint</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </roleHint>
+      <roleType>
+        <disabled>0</disabled>
+        <name>roleType</name>
+        <number>1</number>
+        <prettyName>Component Role Type</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </roleType>
+      <scope>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <multiSelect>0</multiSelect>
+        <name>scope</name>
+        <number>3</number>
+        <prettyName>Component Scope</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>wiki=Current Wiki|user=Current User|global=Global</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </scope>
+    </class>
+    <name>UINCode.UINScriptService</name>
+    <number>0</number>
+    <className>XWiki.ComponentClass</className>
+    <guid>77e946aa-0557-4881-a566-f3defe28069c</guid>
+    <property>
+      <roleHint>UINCode.ScriptService</roleHint>
+    </property>
+    <property>
+      <roleType>org.xwiki.observation.EventListener</roleType>
+    </property>
+    <property>
+      <scope>wiki</scope>
+    </property>
+  </object>
+  <object>
+    <class>
+      <name>XWiki.ComponentInterfaceClass</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <name>
+        <disabled>0</disabled>
+        <name>name</name>
+        <number>1</number>
+        <prettyName>Interface Qualified Name</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </name>
+    </class>
+    <name>UINCode.UINScriptService</name>
+    <number>0</number>
+    <className>XWiki.ComponentInterfaceClass</className>
+    <guid>c6114cef-7ebb-4a53-a581-da6d91ea7ea9</guid>
+    <property>
+      <name>org.xwiki.component.phase.Initializable</name>
+    </property>
+  </object>
+  <object>
+    <class>
+      <name>XWiki.ComponentMethodClass</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <code>
+        <disabled>0</disabled>
+        <editor>Text</editor>
+        <name>code</name>
+        <number>2</number>
+        <prettyName>Method body code</prettyName>
+        <rows>20</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </code>
+      <name>
+        <disabled>0</disabled>
+        <name>name</name>
+        <number>1</number>
+        <prettyName>Method name</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </name>
+    </class>
+    <name>UINCode.UINScriptService</name>
+    <number>0</number>
+    <className>XWiki.ComponentMethodClass</className>
+    <guid>6a55c104-13f3-496a-940d-2fc863a7cda5</guid>
+    <property>
+      <code>{{groovy}}
+import java.util.ConcurrentModificationException
+
+import javax.inject.Inject
+import javax.inject.Named
+import javax.inject.Provider
+import javax.inject.Singleton
+
+import com.xpn.xwiki.XWikiContext
+import com.xpn.xwiki.doc.XWikiDocument
+import com.xpn.xwiki.objects.BaseObject
+
+import org.xwiki.component.annotation.Component
+import org.xwiki.model.reference.DocumentReference
+import org.xwiki.model.reference.LocalDocumentReference
+import org.xwiki.script.service.ScriptService
+
+@Component
+@Named("uin")
+@Singleton
+public class UINScriptService implements ScriptService
+{
+    @Inject
+    private Provider&lt;XWikiContext&gt; xcontextProvider
+
+    class Config
+    {
+        private static final String CONFIG_SPACE = 'UINCode'
+        private static final String CONFIG_DOCNAME = 'UINConfig'
+        private static final String CONFIG_CLASSNAME = 'UINConfigClass'
+        private static final String CURRENT_UIN_PROPERTY = 'currentUIN'
+        private static final String INCREMENT_PROPERTY = 'increment'
+        private static final LocalDocumentReference CONFIGCLASS_REF = new LocalDocumentReference(CONFIG_SPACE, CONFIG_CLASSNAME)
+        private XWikiContext xcontext
+        private XWikiDocument configDoc
+        private BaseObject configObj
+
+        Config(XWikiContext xcontext)
+        {
+            this.xcontext = xcontext;
+            configDoc = xcontext.getWiki().getDocument(new DocumentReference(xcontext.getWikiId(), CONFIG_SPACE, CONFIG_DOCNAME), xcontext)
+            if (configDoc.isNew()) {
+                throw new RuntimeException('UIN configuration cannot be found')
+            }
+            configObj = configDoc.getXObject(CONFIGCLASS_REF, false, xcontext)
+            if (!configObj) {
+                throw new RuntimeException('UIN configuration object cannot be found')
+            }
+        }
+
+        long getCurrentUIN()
+        {
+            return configObj.getLongValue(CURRENT_UIN_PROPERTY)
+        }
+
+        void setCurrentUIN(long uin)
+        {
+            configObj.setLongValue(CURRENT_UIN_PROPERTY, uin)
+        }
+
+        long getIncrement()
+        {
+            return configObj.getLongValue(INCREMENT_PROPERTY)
+        }
+
+        void setIncrement(long increment)
+        {
+            configObj.setLongValue(INCREMENT_PROPERTY, increment)
+        }
+
+        long incrementCurrentUIN()
+        {
+            long currentUIN = getCurrentUIN() + getIncrement()
+            configObj.setLongValue('currentUIN', currentUIN)
+            saveWithoutHistory()
+            return currentUIN
+        }
+
+        void saveWithoutHistory()
+        {
+            configDoc.contentUpdateDate = new Date()
+            configDoc.metaDataDirty = false
+            configDoc.contentDirty = false
+            xcontext.getWiki().getStore().saveXWikiDoc(configDoc, xcontext)
+        }
+
+        void save(String comment)
+        {
+            xcontext.getWiki().saveDocument(configDoc, comment, xcontext)
+        }
+    }
+
+    public synchronized long getNext()
+    {
+        return new Config(xcontextProvider.get()).incrementCurrentUIN()
+    }
+
+    public long getCurrentUIN()
+    {
+        return new Config(xcontextProvider.get()).getCurrentUIN()
+    }
+
+    public synchronized void updateConfig(long currentUIN, long newUIN, long increment)
+    {
+        Config config = new Config(xcontextProvider.get())
+        if (currentUIN != newUIN) {
+          if (config.getCurrentUIN() != currentUIN) {
+            throw new ConcurrentModificationException("Concurrent modification of UIN detected, cannot proceed with update $config $currentUIN $newUIN $increment")
+          }
+          config.setCurrentUIN(newUIN)
+          currentUIN = newUIN;
+        } else {
+          currentUIN = config.getCurrentUIN();
+        }
+        config.setIncrement(increment)
+        config.save("Configuration updated - Starts at ${currentUIN}, increment by ${increment}")
+    }
+}
+
+// Register UIN ScriptService
+def componentManager = services.component.getComponentManager('wiki:' + services.wiki.currentWikiId)
+def loader = new org.xwiki.component.annotation.ComponentAnnotationLoader()
+def descriptors = loader.getComponentsDescriptors(UINScriptService.class)
+for (descriptor in descriptors) {
+    componentManager.registerComponent(descriptor)
+}
+{{/groovy}}</code>
+    </property>
+    <property>
+      <name>initialize</name>
+    </property>
+  </object>
+  <object>
+    <class>
+      <name>XWiki.ComponentMethodClass</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <code>
+        <disabled>0</disabled>
+        <editor>Text</editor>
+        <name>code</name>
+        <number>2</number>
+        <prettyName>Method body code</prettyName>
+        <rows>20</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </code>
+      <name>
+        <disabled>0</disabled>
+        <name>name</name>
+        <number>1</number>
+        <prettyName>Method name</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </name>
+    </class>
+    <name>UINCode.UINScriptService</name>
+    <number>1</number>
+    <className>XWiki.ComponentMethodClass</className>
+    <guid>6d7e8f14-a8fe-4b44-a5aa-05e9db40c6b9</guid>
+    <property>
+      <code>{{groovy}}
+xcontext.method.output.value = doc.documentReference.toString()
+{{/groovy}}</code>
+    </property>
+    <property>
+      <name>getName</name>
+    </property>
+  </object>
+  <object>
+    <class>
+      <name>XWiki.ComponentMethodClass</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <code>
+        <disabled>0</disabled>
+        <editor>Text</editor>
+        <name>code</name>
+        <number>2</number>
+        <prettyName>Method body code</prettyName>
+        <rows>20</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </code>
+      <name>
+        <disabled>0</disabled>
+        <name>name</name>
+        <number>1</number>
+        <prettyName>Method name</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </name>
+    </class>
+    <name>UINCode.UINScriptService</name>
+    <number>2</number>
+    <className>XWiki.ComponentMethodClass</className>
+    <guid>4e785a52-2d5d-43a0-bcec-cb016d24c05e</guid>
+    <property>
+      <code>{{groovy}}
+xcontext.method.output.value = []
+{{/groovy}}</code>
+    </property>
+    <property>
+      <name>getEvents</name>
+    </property>
+  </object>
+  <object>
+    <class>
+      <name>XWiki.ComponentMethodClass</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <code>
+        <disabled>0</disabled>
+        <editor>Text</editor>
+        <name>code</name>
+        <number>2</number>
+        <prettyName>Method body code</prettyName>
+        <rows>20</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </code>
+      <name>
+        <disabled>0</disabled>
+        <name>name</name>
+        <number>1</number>
+        <prettyName>Method name</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </name>
+    </class>
+    <name>UINCode.UINScriptService</name>
+    <number>3</number>
+    <className>XWiki.ComponentMethodClass</className>
+    <guid>40d66bbb-2dde-46ff-816e-9f58c3f3dc97</guid>
+    <property>
+      <code/>
+    </property>
+    <property>
+      <name>onEvent</name>
+    </property>
+  </object>
+  <content>This is the implementation of the UIN Script Service.
+
+This service allows creating sequential unique identification number.
+It is a thread safe service and it works across XWiki restarts.
+
+The [[Configuration&gt;&gt;XWiki.XWikiPreferences||queryString="editor=globaladmin&amp;section=UIN%20Script%20Service"]] contains the last generated identifier as well as the increment used for calculating the next number.
+
+To retrieve a new Unique Identification Number in velocity:
+
+{{code language="velocity"}}
+  $services.uin.next
+{{/code}}
+
+To update safely the UIN configuration, use:
+
+{{code language="velocity"}}
+  $services.uin.updateConfig(currentUIN, newUIN, increment)
+{{/code}}
+
+If the current UIN does not match the actual current when the update is applied, the update will be cancelled with a ConcurrentModificationException.</content>
+</xwikidoc>

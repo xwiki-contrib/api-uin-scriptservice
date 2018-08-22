@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <!--
  * See the NOTICE file distributed with this work for additional
  * information regarding copyright ownership.
@@ -19,24 +20,21 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 -->
 
-<xwikidoc reference="UINCode.UINConfigSheet" locale="">
+<xwikidoc version="1.3" reference="UINCode.UINConfigSheet" locale="">
   <web>UINCode</web>
   <name>UINConfigSheet</name>
   <language/>
   <defaultLanguage/>
   <translation>0</translation>
-  <parent>UINCode.WebHome</parent>
   <creator>xwiki:XWiki.Admin</creator>
+  <parent>UINCode.WebHome</parent>
   <author>xwiki:XWiki.Admin</author>
-  <customClass/>
   <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
   <creationDate>1485270335000</creationDate>
   <date>1485270335000</date>
   <contentUpdateDate>1485270335000</contentUpdateDate>
   <version>1.1</version>
   <title/>
-  <defaultTemplate/>
-  <validationScript/>
   <comment/>
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/2.1</syntaxId>
@@ -59,11 +57,17 @@
   #try()
     #set ($integer = 1)
     #set ($long = $integer.longValue())
-    #set ($currentUIN = $long.parseLong($request.get('previousUIN')))
+    #if ($request.get('previousUIN') != '')
+      #set ($currentUIN = $long.parseLong($request.get('previousUIN')))
+    #else
+      #set ($currentUIN = 0)
+    #end
     #set ($newUIN = $long.parseLong($request.get('currentUIN')))
     #set ($increment = $long.parseLong($request.get('increment')))
+    #set ($uinName = $request.get('name'))
+    #set ($uinPreviousName = $request.get('previousName'))
     #if ("$currentUIN" != "" &amp;&amp; "$newUIN" != "" &amp;&amp; "$increment" != "")
-      #set ($discard = $services.uin.updateConfig($currentUIN, $newUIN, $increment))
+      #set ($discard = $services.uin.updateConfig($uinPreviousName, $uinName, $currentUIN, $newUIN, $increment))
     #end
   #end
   #if ("$!exception" != '')
@@ -79,13 +83,45 @@
     #end
   #end
 #end
+#if ($request.action == 'Remove' &amp;&amp; $services.security.authorization.hasAccess('admin', $confDoc.documentReference) &amp;&amp; ($xcontext.action == 'view' || $xcontext.action == 'admin'))
+  #try()
+    #set ($uinName = "$!request.get('previousName')")
+    #set ($discard = $services.uin.removeConfig($uinName))
+  #end
+  #if ("$!exception" != '')
+
+    #if ($exception.getCause().class.getName() == 'java.util.ConcurrentModificationException')
+      {{error}}
+        Concurrent modification of UIN detected, cannot proceed with update. Please retry.
+      {{/error}}
+    #else
+      {{html}}
+        #displayUnhandledException($exception)
+      {{/html}}
+    #end
+  #end
+#end
+#if ($request.action == 'Create' &amp;&amp; $services.security.authorization.hasAccess('admin', $confDoc.documentReference) &amp;&amp; ($xcontext.action == 'view' || $xcontext.action == 'admin'))
+  #try()
+    #set ($discard = $services.uin.createConfig())
+  #end
+  #if ("$!exception" != '')
+
+    {{html}}
+    #displayUnhandledException($exception)
+    {{/html}}
+  #end
+#end
 #set($confDoc = $xwiki.getDocument('UINCode.UINConfig'))
-#set($obj = $confDoc.getObject('UINCode.UINConfigClass'))
+#foreach($obj in $confDoc.getObjects('UINCode.UINConfigClass'))
 #set($class = $obj.xWikiClass)
 #if ($services.security.authorization.hasAccess('admin', $confDoc.documentReference) &amp;&amp; ($xcontext.action == 'view' || $xcontext.action == 'admin'))
+
 {{html}}
+
 &lt;form class="xform" action="#" method="POST"&gt;
-&lt;input type="hidden" name="previousUIN" value="$obj.getValue('currentUIN')" /&gt;
+&lt;input type="hidden" name="previousUIN" value="$!obj.getValue('currentUIN')" /&gt;
+&lt;input type="hidden" name="previousName" value="$!obj.getValue('name')" /&gt;
 &lt;dl&gt;
 #foreach($prop in $class.properties)
   &lt;dt&gt;&lt;label for="$prop.name"&gt;$prop.prettyName&lt;/label&gt;&lt;span class="xHint"&gt;$prop.tooltip&lt;/span&gt;&lt;/dt&gt;
@@ -94,14 +130,27 @@
 &lt;/dl&gt;
 &lt;div class="button-wrapper"&gt;
   &lt;input class="button" name="action" type="submit" value="Update" /&gt;
+  &lt;input class="button" name="action" type="submit" value="Remove" /&gt;
 &lt;/div&gt;
 &lt;/form&gt;
+
 {{/html}}
+
 #else
   #foreach($prop in $class.properties)
     ; $prop.prettyName
     : $confDoc.display($prop.getName())
   #end
 #end
+
+#end
+
+{{html}}
+&lt;form class="xform" action="#" method="POST"&gt;
+&lt;div class="button-wrapper"&gt;
+  &lt;input class="button" name="action" type="submit" value="Create" /&gt;
+&lt;/div&gt;
+&lt;/form&gt;
+{{/html}}
 {{/velocity}}</content>
 </xwikidoc>

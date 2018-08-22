@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <!--
  * See the NOTICE file distributed with this work for additional
  * information regarding copyright ownership.
@@ -19,29 +20,35 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 -->
 
-<xwikidoc reference="UINCode.WebHome" locale="">
+<xwikidoc version="1.3" reference="UINCode.WebHome" locale="">
   <web>UINCode</web>
   <name>WebHome</name>
   <language/>
   <defaultLanguage/>
   <translation>0</translation>
-  <parent>Main.WebHome</parent>
   <creator>xwiki:XWiki.Admin</creator>
+  <parent>Main.WebHome</parent>
   <author>xwiki:XWiki.Admin</author>
-  <customClass/>
   <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
   <creationDate>1485270335000</creationDate>
   <date>1485270335000</date>
   <contentUpdateDate>1485270335000</contentUpdateDate>
   <version>1.1</version>
   <title>UIN Script Service</title>
-  <defaultTemplate/>
-  <validationScript/>
   <comment/>
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/2.1</syntaxId>
   <hidden>true</hidden>
+  <content>This is the code space of the UIN Script Service.
+
+{{info}}
+For developers, this is also the configuration for the xWebIDE.
+{{/info}}</content>
   <object>
+    <name>UINCode.WebHome</name>
+    <number>0</number>
+    <className>WebIDECode.ApplicationClass</className>
+    <guid>c6d0bd47-dba0-4584-8afe-564438c1703f</guid>
     <class>
       <name>WebIDECode.ApplicationClass</name>
       <customClass/>
@@ -51,119 +58,21 @@
       <defaultWeb/>
       <nameField/>
       <validationScript/>
-      <codeSpace>
-        <customDisplay/>
-        <disabled>0</disabled>
-        <name>codeSpace</name>
-        <number>5</number>
-        <picker>0</picker>
-        <prettyName>Code space</prettyName>
-        <size>30</size>
-        <unmodifiable>0</unmodifiable>
-        <validationMessage/>
-        <validationRegExp/>
-        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
-      </codeSpace>
-      <pages>
-        <cache>0</cache>
-        <classname/>
-        <customDisplay/>
-        <disabled>0</disabled>
-        <displayType>input</displayType>
-        <idField/>
-        <multiSelect>1</multiSelect>
-        <name>pages</name>
-        <number>3</number>
-        <picker>1</picker>
-        <prettyName>Pages</prettyName>
-        <relationalStorage>0</relationalStorage>
-        <separator> </separator>
-        <separators>,|</separators>
-        <size>60</size>
-        <sort>none</sort>
-        <sql>select distinct doc.fullName from XWikiDocument doc</sql>
-        <unmodifiable>0</unmodifiable>
-        <validationMessage/>
-        <validationRegExp/>
-        <valueField/>
-        <classType>com.xpn.xwiki.objects.classes.DBListClass</classType>
-      </pages>
-      <projectName>
-        <customDisplay/>
-        <disabled>0</disabled>
-        <name>projectName</name>
-        <number>1</number>
-        <picker>0</picker>
-        <prettyName>Project Name</prettyName>
-        <size>30</size>
-        <unmodifiable>0</unmodifiable>
-        <validationMessage/>
-        <validationRegExp/>
-        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
-      </projectName>
-      <spaces>
-        <cache>0</cache>
-        <classname/>
-        <customDisplay/>
-        <disabled>0</disabled>
-        <displayType>input</displayType>
-        <idField/>
-        <multiSelect>1</multiSelect>
-        <name>spaces</name>
-        <number>2</number>
-        <picker>1</picker>
-        <prettyName>Space</prettyName>
-        <relationalStorage>0</relationalStorage>
-        <separator> </separator>
-        <separators>,|</separators>
-        <size>60</size>
-        <sort>none</sort>
-        <sql>select distinct doc.space from XWikiDocument doc</sql>
-        <unmodifiable>0</unmodifiable>
-        <validationMessage/>
-        <validationRegExp/>
-        <valueField/>
-        <classType>com.xpn.xwiki.objects.classes.DBListClass</classType>
-      </spaces>
-      <xarVersion>
-        <customDisplay/>
-        <disabled>0</disabled>
-        <name>xarVersion</name>
-        <number>4</number>
-        <numberType>integer</numberType>
-        <prettyName>xar version number</prettyName>
-        <size>30</size>
-        <unmodifiable>0</unmodifiable>
-        <validationMessage/>
-        <validationRegExp/>
-        <classType>com.xpn.xwiki.objects.classes.NumberClass</classType>
-      </xarVersion>
     </class>
-    <name>UINCode.WebHome</name>
-    <number>0</number>
-    <className>WebIDECode.ApplicationClass</className>
-    <guid>c6d0bd47-dba0-4584-8afe-564438c1703f</guid>
     <property>
       <codeSpace>UINCode</codeSpace>
     </property>
     <property>
-      <pages/>
+      <pages>[]</pages>
     </property>
     <property>
       <projectName>UIN Script Service</projectName>
     </property>
     <property>
-      <spaces>
-        <value>UINCode</value>
-      </spaces>
+      <spaces>[UINCode]</spaces>
     </property>
     <property>
       <xarVersion>2</xarVersion>
     </property>
   </object>
-  <content>This is the code space of the UIN Script Service.
-
-{{info}}
-For developers, this is also the configuration for the xWebIDE.
-{{/info}}</content>
 </xwikidoc>

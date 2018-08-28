@@ -103,7 +103,12 @@
 #end
 #if ($request.action == 'Create' &amp;&amp; $services.security.authorization.hasAccess('admin', $confDoc.documentReference) &amp;&amp; ($xcontext.action == 'view' || $xcontext.action == 'admin'))
   #try()
-    #set ($discard = $services.uin.createConfig())
+    #set ($integer = 1)
+    #set ($long = $integer.longValue())
+    #set ($newUIN = $long.parseLong("$!request.get('new_currentUIN')"))
+    #set ($increment = $long.parseLong("$!request.get('new_increment')"))
+    #set ($uinName = "$!request.get('new_name')")
+    #set ($discard = $services.uin.createConfig($uinName, $newUIN, $increment))
   #end
   #if ("$!exception" != '')
 
@@ -145,8 +150,18 @@
 
 #end
 
+== Create new configuration ==
 {{html}}
+#set($confDoc = $xwiki.getDocument('UINCode.UINConfig'))
+#set($fakeObj = $confDoc.newObject('UINCode.UINConfigClass'))
+#set($confClass = $fakeObj.xWikiClass)
 &lt;form class="xform" action="#" method="POST"&gt;
+&lt;dl&gt;
+  #foreach($prop in $confClass.properties)
+    &lt;dt&gt;&lt;label for="new_${prop.name}"&gt;$prop.prettyName&lt;/label&gt;&lt;span class="xHint"&gt;$prop.tooltip&lt;/span&gt;&lt;/dt&gt;
+    &lt;dd&gt;$confDoc.displayEdit($prop, 'new_', $fakeObj)&lt;/dd&gt;
+  #end
+&lt;/dl&gt;
 &lt;div class="button-wrapper"&gt;
   &lt;input class="button" name="action" type="submit" value="Create" /&gt;
 &lt;/div&gt;

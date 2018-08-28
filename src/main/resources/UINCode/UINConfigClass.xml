@@ -52,6 +52,7 @@
     <currentUIN>
       <customDisplay/>
       <disabled>0</disabled>
+      <hint/>
       <name>currentUIN</name>
       <number>2</number>
       <numberType>long</numberType>
@@ -66,6 +67,7 @@
     <increment>
       <customDisplay/>
       <disabled>0</disabled>
+      <hint/>
       <name>increment</name>
       <number>3</number>
       <numberType>long</numberType>
@@ -80,6 +82,7 @@
     <name>
       <customDisplay/>
       <disabled>0</disabled>
+      <hint/>
       <name>name</name>
       <number>1</number>
       <picker>0</picker>

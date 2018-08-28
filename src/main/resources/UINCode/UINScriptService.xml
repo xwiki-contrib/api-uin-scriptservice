@@ -295,7 +295,7 @@ public class UINScriptService implements ScriptService
         {
             long currentUIN = getCurrentUIN() + getIncrement()
             configObj.setLongValue('currentUIN', currentUIN)
-            saveWithoutHistory()
+            saveWithoutHistory(configDoc, xcontext)
             return currentUIN
         }
     }
@@ -306,20 +306,16 @@ public class UINScriptService implements ScriptService
         return xcontext.getWiki().getDocument(new DocumentReference(xcontext.getWikiId(), CONFIG_SPACE, CONFIG_DOCNAME), xcontext)
     }
 
-    void saveWithoutHistory()
+    void saveWithoutHistory(XWikiDocument configDoc, XWikiContext xcontext)
     {
-        def xcontext = xcontextProvider.get()
-        def configDoc = getConfigDoc()
         configDoc.contentUpdateDate = new Date()
         configDoc.metaDataDirty = false
         configDoc.contentDirty = false
         xcontext.getWiki().getStore().saveXWikiDoc(configDoc, xcontext)
     }
 
-    void save(String comment)
+    void save(XWikiDocument configDoc, String comment, XWikiContext xcontext)
     {
-        def xcontext = xcontextProvider.get()
-        def configDoc = getConfigDoc()
         xcontext.getWiki().saveDocument(configDoc, comment, xcontext)
     }
 
@@ -378,7 +374,7 @@ public class UINScriptService implements ScriptService
         config.setIncrement(increment)
         if (previousName.equals(newName) || (!previousName.equals(newName) &amp;&amp; isUnique(newName))) {
             config.setName(newName)
-            config.save("Configuration updated for UIN $newName - Starts at ${currentUIN}, increment by ${increment}")
+            save(config.configDoc, "Configuration updated for UIN $newName - Starts at ${currentUIN}, increment by ${increment}", config.xcontext)
         } else {
             throw new DuplicateKeyException("A UIN with the name $newName already exists. Please choose another name.")
         }
@@ -391,15 +387,22 @@ public class UINScriptService implements ScriptService
                 def uinName = cObj.getStringValue(NAME_PROPERTY);
                 if (uinName != null &amp;&amp; uinName.equals(name)) {
                     configDoc.removeXObject(cObj)
-                    save('Removal of UIN "' + name + '"')
+                    save(configDoc, 'Removal of UIN "' + name + '"', xcontextProvider.get())
                 }
             }
         }
     }
 
-    public void createConfig() {
+    public void createConfig(String name, long currentUIN, long increment) {
         def configDoc = getConfigDoc()
-        configDoc.createNewObject('UINCode.UINConfigClass', xcontextProvider.get())
+        if (!isUnique(name)) {
+            throw new DuplicateKeyException("A UIN with the name $name already exists. Please choose another name.")
+        }
+        def configObj = configDoc.newXObject(CONFIGCLASS_REF, xcontextProvider.get())
+        configObj.setStringValue(NAME_PROPERTY, name);
+        configObj.setLongValue(CURRENT_UIN_PROPERTY, currentUIN);
+        configObj.setLongValue(INCREMENT_PROPERTY, increment);
+        save(configDoc, "New UIN added: $name", xcontextProvider.get());
     }
 
 }

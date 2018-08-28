@@ -42,7 +42,7 @@
   <content/>
   <object>
     <name>UINCode.UINConfig</name>
-    <number>1</number>
+    <number>0</number>
     <className>UINCode.UINConfigClass</className>
     <guid>07722692-7e7c-416c-a0d7-330449a161a4</guid>
     <class>
@@ -100,7 +100,7 @@
       </name>
     </class>
     <property>
-      <currentUIN>1</currentUIN>
+      <currentUIN>0</currentUIN>
     </property>
     <property>
       <increment>1</increment>

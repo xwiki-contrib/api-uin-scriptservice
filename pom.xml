@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.xwiki.commons</groupId>
     <artifactId>xwiki-commons-pom</artifactId>
-    <version>6.4.4</version>
+    <version>10.11</version>
   </parent>
   <groupId>org.xwiki.contrib</groupId>
   <artifactId>api-uin-scriptservice</artifactId>
@@ -130,6 +130,14 @@
         <groupId>org.xwiki.commons</groupId>
         <artifactId>xwiki-commons-tool-xar-plugin</artifactId>
         <version>${commons.version}</version>
+        <configuration>
+          <entries>
+            <entry>
+              <document>UINCode.UINConfig</document>
+              <type>configuration</type>
+            </entry>
+          </entries>
+        </configuration>
       </plugin>
     </plugins>
   </build>

@@ -56,20 +56,5 @@ For developers, this is also the configuration for the xWebIDE.
       <nameField/>
       <validationScript/>
     </class>
-    <property>
-      <codeSpace>UINCode</codeSpace>
-    </property>
-    <property>
-      <pages>[]</pages>
-    </property>
-    <property>
-      <projectName>UIN Script Service</projectName>
-    </property>
-    <property>
-      <spaces>[UINCode]</spaces>
-    </property>
-    <property>
-      <xarVersion>2</xarVersion>
-    </property>
   </object>
 </xwikidoc>

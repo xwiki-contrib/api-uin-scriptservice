@@ -116,6 +116,9 @@
     <property>
       <levels>edit</levels>
     </property>
+    <property>
+      <users/>
+    </property>
   </object>
   <object>
     <name>UINCode.WebPreferences</name>
@@ -262,7 +265,7 @@
         <unmodifiable>0</unmodifiable>
         <validationMessage/>
         <validationRegExp/>
-        <values>---|Image|Text</values>
+        <values>Image|Text</values>
         <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
       </comment_anonymous>
       <comment_registered>
@@ -284,7 +287,7 @@
         <unmodifiable>0</unmodifiable>
         <validationMessage/>
         <validationRegExp/>
-        <values>---|Image|Text</values>
+        <values>Image|Text</values>
         <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
       </comment_registered>
       <confirmation_email_content>
@@ -357,18 +360,30 @@
         <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
       </default_language>
       <documentBundles>
+        <cache>0</cache>
+        <classname/>
         <customDisplay/>
         <disabled>0</disabled>
+        <displayType>input</displayType>
+        <freeText>discouraged</freeText>
+        <hint/>
+        <idField/>
+        <multiSelect>0</multiSelect>
         <name>documentBundles</name>
         <number>49</number>
-        <picker>0</picker>
+        <picker>1</picker>
         <prettyName>Internationalization Document Bundles</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators/>
         <size>60</size>
-        <tooltip/>
+        <sort>none</sort>
+        <sql/>
         <unmodifiable>0</unmodifiable>
         <validationMessage/>
         <validationRegExp/>
-        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+        <valueField/>
+        <classType>com.xpn.xwiki.objects.classes.PageClass</classType>
       </documentBundles>
       <edit_anonymous>
         <cache>0</cache>
@@ -389,7 +404,7 @@
         <unmodifiable>0</unmodifiable>
         <validationMessage/>
         <validationRegExp/>
-        <values>---|Image|Text</values>
+        <values>Image|Text</values>
         <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
       </edit_anonymous>
       <edit_registered>
@@ -411,7 +426,7 @@
         <unmodifiable>0</unmodifiable>
         <validationMessage/>
         <validationRegExp/>
-        <values>---|Image|Text</values>
+        <values>Image|Text</values>
         <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
       </edit_registered>
       <editcomment>
@@ -461,7 +476,7 @@
         <unmodifiable>0</unmodifiable>
         <validationMessage/>
         <validationRegExp/>
-        <values>---|Text|Wysiwyg</values>
+        <values>Text|Wysiwyg</values>
         <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
       </editor>
       <guest_comment_requires_captcha>
@@ -472,7 +487,7 @@
         <displayType>select</displayType>
         <name>guest_comment_requires_captcha</name>
         <number>37</number>
-        <prettyName>Enable CAPTCHA in Comments for Unregistered Users</prettyName>
+        <prettyName>Enable CAPTCHA in comments for unregistered users</prettyName>
         <unmodifiable>0</unmodifiable>
         <validationMessage/>
         <validationRegExp/>
@@ -594,17 +609,14 @@
         <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
       </ldap_bind_DN>
       <ldap_bind_pass>
-        <customDisplay/>
         <disabled>0</disabled>
         <name>ldap_bind_pass</name>
         <number>55</number>
-        <picker>0</picker>
         <prettyName>Ldap password matching</prettyName>
         <size>60</size>
+        <storageType>Clear</storageType>
         <unmodifiable>0</unmodifiable>
-        <validationMessage/>
-        <validationRegExp/>
-        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+        <classType>com.xpn.xwiki.objects.classes.PasswordClass</classType>
       </ldap_bind_pass>
       <ldap_exclude_group>
         <customDisplay/>
@@ -682,7 +694,7 @@
         <unmodifiable>0</unmodifiable>
         <validationMessage/>
         <validationRegExp/>
-        <values>|always|create</values>
+        <values>always|create</values>
         <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
       </ldap_mode_group_sync>
       <ldap_photo_attachment_name>
@@ -833,7 +845,7 @@
         <separators>|, </separators>
         <size>1</size>
         <unmodifiable>0</unmodifiable>
-        <values>---|Small|Medium|Large</values>
+        <values>Small|Medium|Large</values>
         <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
       </leftPanelsWidth>
       <meta>
@@ -942,7 +954,7 @@
         <unmodifiable>0</unmodifiable>
         <validationMessage/>
         <validationRegExp/>
-        <values>---|Image|Text</values>
+        <values>Image|Text</values>
         <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
       </registration_anonymous>
       <registration_registered>
@@ -964,7 +976,7 @@
         <unmodifiable>0</unmodifiable>
         <validationMessage/>
         <validationRegExp/>
-        <values>---|Image|Text</values>
+        <values>Image|Text</values>
         <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
       </registration_registered>
       <rightPanels>
@@ -994,7 +1006,7 @@
         <separators>|, </separators>
         <size>1</size>
         <unmodifiable>0</unmodifiable>
-        <values>---|Small|Medium|Large</values>
+        <values>Small|Medium|Large</values>
         <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
       </rightPanelsWidth>
       <showLeftPanels>
@@ -1098,18 +1110,30 @@
         <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
       </showinformation>
       <skin>
+        <cache>0</cache>
+        <classname>XWiki.XWikiSkins</classname>
         <customDisplay/>
         <disabled>0</disabled>
+        <displayType>input</displayType>
+        <freeText>allowed</freeText>
+        <hint/>
+        <idField/>
+        <multiSelect>0</multiSelect>
         <name>skin</name>
         <number>7</number>
-        <picker>0</picker>
+        <picker>1</picker>
         <prettyName>Skin</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators/>
         <size>30</size>
-        <tooltip/>
+        <sort>none</sort>
+        <sql/>
         <unmodifiable>0</unmodifiable>
         <validationMessage/>
         <validationRegExp/>
-        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+        <valueField/>
+        <classType>com.xpn.xwiki.objects.classes.PageClass</classType>
       </skin>
       <smtp_port>
         <customDisplay/>
@@ -1318,5 +1342,215 @@
         <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
       </xwiki.title.mandatory>
     </class>
+    <property>
+      <accessibility/>
+    </property>
+    <property>
+      <admin_email/>
+    </property>
+    <property>
+      <colorTheme/>
+    </property>
+    <property>
+      <comment_anonymous/>
+    </property>
+    <property>
+      <comment_registered/>
+    </property>
+    <property>
+      <confirmation_email_content/>
+    </property>
+    <property>
+      <core.defaultDocumentSyntax/>
+    </property>
+    <property>
+      <dateformat/>
+    </property>
+    <property>
+      <default_language/>
+    </property>
+    <property>
+      <documentBundles/>
+    </property>
+    <property>
+      <edit_anonymous/>
+    </property>
+    <property>
+      <edit_registered/>
+    </property>
+    <property>
+      <editcomment/>
+    </property>
+    <property>
+      <editcomment_mandatory/>
+    </property>
+    <property>
+      <editor/>
+    </property>
+    <property>
+      <guest_comment_requires_captcha/>
+    </property>
+    <property>
+      <iconTheme/>
+    </property>
+    <property>
+      <invitation_email_content/>
+    </property>
+    <property>
+      <javamail_extra_props/>
+    </property>
+    <property>
+      <languages/>
+    </property>
+    <property>
+      <ldap/>
+    </property>
+    <property>
+      <ldap_UID_attr/>
+    </property>
+    <property>
+      <ldap_base_DN/>
+    </property>
+    <property>
+      <ldap_bind_DN/>
+    </property>
+    <property>
+      <ldap_bind_pass/>
+    </property>
+    <property>
+      <ldap_exclude_group/>
+    </property>
+    <property>
+      <ldap_fields_mapping/>
+    </property>
+    <property>
+      <ldap_group_mapping/>
+    </property>
+    <property>
+      <ldap_groupcache_expiration/>
+    </property>
+    <property>
+      <ldap_mode_group_sync/>
+    </property>
+    <property>
+      <ldap_photo_attachment_name/>
+    </property>
+    <property>
+      <ldap_photo_attribute/>
+    </property>
+    <property>
+      <ldap_port/>
+    </property>
+    <property>
+      <ldap_server/>
+    </property>
+    <property>
+      <ldap_trylocal/>
+    </property>
+    <property>
+      <ldap_update_photo/>
+    </property>
+    <property>
+      <ldap_update_user/>
+    </property>
+    <property>
+      <ldap_user_group/>
+    </property>
+    <property>
+      <ldap_validate_password/>
+    </property>
+    <property>
+      <leftPanels/>
+    </property>
+    <property>
+      <leftPanelsWidth/>
+    </property>
+    <property>
+      <meta/>
+    </property>
+    <property>
+      <minoredit/>
+    </property>
+    <property>
+      <obfuscateEmailAddresses/>
+    </property>
+    <property>
+      <parent/>
+    </property>
+    <property>
+      <plugins/>
+    </property>
+    <property>
+      <registration_anonymous/>
+    </property>
+    <property>
+      <registration_registered/>
+    </property>
+    <property>
+      <rightPanels/>
+    </property>
+    <property>
+      <rightPanelsWidth/>
+    </property>
+    <property>
+      <showannotations/>
+    </property>
+    <property>
+      <showattachments/>
+    </property>
+    <property>
+      <showcomments/>
+    </property>
+    <property>
+      <showhistory/>
+    </property>
+    <property>
+      <showinformation/>
+    </property>
+    <property>
+      <skin/>
+    </property>
+    <property>
+      <smtp_port/>
+    </property>
+    <property>
+      <smtp_server/>
+    </property>
+    <property>
+      <smtp_server_password/>
+    </property>
+    <property>
+      <smtp_server_username/>
+    </property>
+    <property>
+      <stylesheet/>
+    </property>
+    <property>
+      <stylesheets/>
+    </property>
+    <property>
+      <tags/>
+    </property>
+    <property>
+      <timezone/>
+    </property>
+    <property>
+      <title/>
+    </property>
+    <property>
+      <upload_maxsize/>
+    </property>
+    <property>
+      <validation_email_content/>
+    </property>
+    <property>
+      <version/>
+    </property>
+    <property>
+      <webcopyright/>
+    </property>
+    <property>
+      <xwiki.title.mandatory/>
+    </property>
   </object>
 </xwikidoc>

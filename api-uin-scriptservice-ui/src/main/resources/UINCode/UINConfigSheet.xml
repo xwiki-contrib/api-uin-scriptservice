@@ -63,8 +63,9 @@
     #set ($increment = $long.parseLong($request.get('increment')))
     #set ($uinName = $request.get('name'))
     #set ($uinPreviousName = $request.get('previousName'))
+    #set ($token = $request.get('token'))
     #if ("$currentUIN" != "" &amp;&amp; "$newUIN" != "" &amp;&amp; "$increment" != "")
-      #set ($discard = $services.uin.updateConfig($uinPreviousName, $uinName, $currentUIN, $newUIN, $increment))
+      #set ($discard = $services.uin.updateConfig($uinPreviousName, $uinName, $currentUIN, $newUIN, $increment, $token))
     #end
   #end
   #if ("$!exception" != '')
@@ -105,7 +106,8 @@
     #set ($newUIN = $long.parseLong("$!request.get('new_currentUIN')"))
     #set ($increment = $long.parseLong("$!request.get('new_increment')"))
     #set ($uinName = "$!request.get('new_name')")
-    #set ($discard = $services.uin.createConfig($uinName, $newUIN, $increment))
+    #set ($token = "$!request.get('new_token')")
+    #set ($discard = $services.uin.createConfig($uinName, $newUIN, $increment, $token))
   #end
   #if ("$!exception" != '')
 

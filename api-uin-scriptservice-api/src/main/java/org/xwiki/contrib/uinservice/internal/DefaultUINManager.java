@@ -49,7 +49,8 @@ public class DefaultUINManager implements UINManager
     private Provider<XWikiContext> xcontextProvider;
 
     @Override
-    public void createConfig(String name, long currentUIN, long increment) throws DuplicateKeyException, XWikiException
+    public void createConfig(String name, long currentUIN, long increment, String token)
+        throws DuplicateKeyException, XWikiException
     {
         XWikiContext xcontext = xcontextProvider.get();
         XWiki xwiki = xcontext.getWiki();
@@ -62,14 +63,14 @@ public class DefaultUINManager implements UINManager
             configObj.setStringValue(UINConfiguration.NAME_PROPERTY, name);
             configObj.setLongValue(UINConfiguration.CURRENT_UIN_PROPERTY, currentUIN);
             configObj.setLongValue(UINConfiguration.INCREMENT_PROPERTY, increment);
+            configObj.setStringValue(UINConfiguration.TOKEN_PROPERY, token);
             xwiki.saveDocument(configDoc, String.format("New UIN added: ", name), xcontext);
         }
-
     }
 
     @Override
     public synchronized void updateConfig(String previousName, String newName, long currentUIN, long newUIN,
-        long increment) throws DuplicateKeyException, XWikiException
+        long increment, String token) throws DuplicateKeyException, XWikiException
     {
         XWikiContext xcontext = xcontextProvider.get();
         UINConfiguration config = new UINConfiguration(xcontext, previousName);
@@ -84,6 +85,7 @@ public class DefaultUINManager implements UINManager
         }
 
         config.setIncrement(increment);
+        config.setToken(token);
 
         if (Objects.equal(previousName, newName) || (!Objects.equal(previousName, newName) && isUnique(newName))) {
             config.setName(newName);
@@ -149,5 +151,16 @@ public class DefaultUINManager implements UINManager
     public synchronized long getNext(String name) throws XWikiException
     {
         return new UINConfiguration(xcontextProvider.get(), name).incrementCurrentUIN();
+    }
+
+    @Override
+    public boolean isTokenValid(String token)
+    {
+        UINConfiguration config = new UINConfiguration(xcontextProvider.get());
+        String storedToken = config.getToken();
+        if (Objects.equal(token, storedToken) || Objects.equal("", storedToken)) {
+            return true;
+        }
+        return false;
     }
 }

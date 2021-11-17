@@ -71,6 +71,11 @@ public class UINConfiguration
     public static final String NAME_PROPERTY = "name";
 
     /**
+     * Secret token.
+     */
+    public static final String TOKEN_PROPERY = "token";
+
+    /**
      * Configuration class reference.
      */
     public static final LocalDocumentReference CONFIGCLASS_REF =
@@ -171,6 +176,22 @@ public class UINConfiguration
     public void setName(String name)
     {
         this.configObj.setStringValue(NAME_PROPERTY, name);
+    }
+
+    /**
+     * @return the secret token
+     */
+    public String getToken()
+    {
+        return this.configObj.getStringValue(TOKEN_PROPERY);
+    }
+
+    /**
+     * @param token the secret token
+     */
+    public void setToken(String token)
+    {
+        this.configObj.setStringValue(TOKEN_PROPERY, token);
     }
 
     /**

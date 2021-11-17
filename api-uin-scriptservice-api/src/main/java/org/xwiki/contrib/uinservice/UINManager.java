@@ -36,10 +36,12 @@ public interface UINManager
      * @param name the configuration name
      * @param currentUIN the starting index value
      * @param increment the incremental step
+     * @param token the secret token
      * @throws DuplicateKeyException in case of duplicate configuration name
-     * @throws XWikiException  in case of exceptions
+     * @throws XWikiException in case of exceptions
      */
-    void createConfig(String name, long currentUIN, long increment) throws DuplicateKeyException, XWikiException;
+    void createConfig(String name, long currentUIN, long increment, String token)
+        throws DuplicateKeyException, XWikiException;
 
     /**
      * Update a UIN configuration.
@@ -49,10 +51,11 @@ public interface UINManager
      * @param currentUIN the starting index value
      * @param newUIN the new starting index value
      * @param increment the incremental step
+     * @param token the secret token
      * @throws DuplicateKeyException in case of duplicate configuration name
      * @throws XWikiException in case of exceptions
      */
-    void updateConfig(String previousName, String newName, long currentUIN, long newUIN, long increment)
+    void updateConfig(String previousName, String newName, long currentUIN, long newUIN, long increment, String token)
         throws DuplicateKeyException, XWikiException;
 
     /**
@@ -79,4 +82,13 @@ public interface UINManager
      * @throws XWikiException in case of exceptions
      */
     long getNext(String name) throws XWikiException;
+
+    /**
+     * Check if the given <code>token</code> matches the internally stored token associated with the current UIN
+     * configuration.
+     *
+     * @param token the token from the request
+     * @return {@code true} if the given token is correct, {@code false} otherwise
+     */
+    boolean isTokenValid(String token);
 }

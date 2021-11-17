@@ -22,6 +22,8 @@ package org.xwiki.contrib.uinservice.rest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
+
 import org.xwiki.rest.XWikiRestException;
 import org.xwiki.stability.Unstable;
 
@@ -39,12 +41,14 @@ public interface UINResource
      * @param xwikiName the name of the wiki
      * @param spaceName the spaces
      * @param pageName the name of the page
+     * @param token the secret token
      * @return the next UIN
      * @throws XWikiRestException in case of exceptions
      */
     @GET long getUIN(
         @PathParam("wikiName") String xwikiName,
         @PathParam("spaceName") String spaceName,
-        @PathParam("pageName") String pageName
+        @PathParam("pageName") String pageName,
+        @QueryParam("token") String token
     ) throws XWikiRestException;
 }

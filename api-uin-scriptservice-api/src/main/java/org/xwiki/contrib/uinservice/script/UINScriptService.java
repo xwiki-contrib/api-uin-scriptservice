@@ -53,7 +53,23 @@ public class UINScriptService implements ScriptService
      */
     public void createConfig(String name, long currentUIN, long increment) throws DuplicateKeyException, XWikiException
     {
-        uinManager.createConfig(name, currentUIN, increment);
+        createConfig(name, currentUIN, increment, "");
+    }
+
+    /**
+     * Create a new UIN configuration.
+     *
+     * @param name the configuration name
+     * @param currentUIN the starting index value
+     * @param increment the incremental step
+     * @param token the secret token
+     * @throws DuplicateKeyException in case of duplicate configuration name
+     * @throws XWikiException in case of exceptions
+     */
+    public void createConfig(String name, long currentUIN, long increment, String token)
+        throws DuplicateKeyException, XWikiException
+    {
+        uinManager.createConfig(name, currentUIN, increment, token);
     }
 
     /**
@@ -70,7 +86,25 @@ public class UINScriptService implements ScriptService
     public void updateConfig(String previousName, String newName, long currentUIN, long newUIN, long increment)
         throws DuplicateKeyException, XWikiException
     {
-        uinManager.updateConfig(previousName, newName, currentUIN, newUIN, increment);
+        updateConfig(previousName, newName, currentUIN, newUIN, increment, "");
+    }
+
+    /**
+     * Update a UIN configuration.
+     *
+     * @param previousName the old configuration name
+     * @param newName the new configuration name
+     * @param currentUIN the starting index value
+     * @param newUIN the new starting index value
+     * @param increment the incremental step
+     * @param token the secret token
+     * @throws DuplicateKeyException in case of duplicate configuration name
+     * @throws XWikiException in case of exceptions
+     */
+    public void updateConfig(String previousName, String newName, long currentUIN, long newUIN, long increment,
+        String token) throws DuplicateKeyException, XWikiException
+    {
+        uinManager.updateConfig(previousName, newName, currentUIN, newUIN, increment, token);
     }
 
     /**

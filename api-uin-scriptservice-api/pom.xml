@@ -22,46 +22,46 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.xwiki.contrib</groupId>
-    <artifactId>parent-platform</artifactId>
-    <version>10.11</version>
+    <artifactId>api-uin-scriptservice</artifactId>
+    <version>2.2-SNAPSHOT</version>
   </parent>
-  <groupId>org.xwiki.contrib</groupId>
-  <artifactId>api-uin-scriptservice</artifactId>
+  <artifactId>api-uin-scriptservice-api</artifactId>
   <version>2.2-SNAPSHOT</version>
-  <packaging>pom</packaging>
-  <name>UIN Script Service - Parent POM</name>
+  <packaging>jar</packaging>
+  <name>UIN Script Service - API</name>
   <description>Script service to generate incremental unique identification numbers</description>
   <properties>
-    <xwiki.extension.features>dgervalle:uin-script-service</xwiki.extension.features>
-    <xwiki.issueManagement.jira.id>UINSCRIPT</xwiki.issueManagement.jira.id>
-    <!-- Enable auto release on jira. -->
-    <xwiki.release.jira.skip>false</xwiki.release.jira.skip>
+    <xwiki.extension.name>UIN Script Service API</xwiki.extension.name>
+    <xwiki.extension.category>API</xwiki.extension.category>
   </properties>
-  <scm>
-    <connection>scm:git:git://github.com/xwiki-contrib/api-uin-scriptservice.git</connection>
-    <developerConnection>scm:git:git@github.com:xwiki-contrib/api-uin-scriptservice.git</developerConnection>
-    <url>https://github.com/xwiki-contrib/api-uin-scriptservice.git</url>
-    <tag>HEAD</tag>
-  </scm>
-  <developers>
-    <developer>
-      <id>dgervalle</id>
-      <name>Denis Gervalle</name>
-      <organization>SOFTEC sa</organization>
-    </developer>
-    <developer>
-      <id>lucaa</id>
-      <name>Anca Luca</name>
-      <organization>XWiki SAS</organization>
-    </developer>
-    <developer>
-      <id>slauriere</id>
-      <name>Stéphane Laurière</name>
-      <organization>XWiki SAS</organization>
-    </developer>
-  </developers>
-  <modules>
-    <module>api-uin-scriptservice-api</module>
-    <module>api-uin-scriptservice-ui</module>
-  </modules>
+  <dependencies>
+    <dependency>
+      <groupId>org.xwiki.commons</groupId>
+      <artifactId>xwiki-commons-script</artifactId>
+      <version>${commons.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.xwiki.platform</groupId>
+      <artifactId>xwiki-platform-oldcore</artifactId>
+      <version>${platform.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.xwiki.platform</groupId>
+      <artifactId>xwiki-platform-model</artifactId>
+      <version>${platform.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.xwiki.platform</groupId>
+      <artifactId>xwiki-platform-rest-server</artifactId>
+      <version>${platform.version}</version>
+    </dependency>
+     <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.ws.rs</groupId>
+      <artifactId>jsr311-api</artifactId>
+    </dependency>
+  </dependencies>
 </project>

@@ -1,0 +1,3 @@
+org.xwiki.contrib.uinservice.internal.DefaultUINManager
+org.xwiki.contrib.uinservice.internal.rest.DefaultUINResource
+org.xwiki.contrib.uinservice.script.UINScriptService

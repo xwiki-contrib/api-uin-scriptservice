@@ -23,10 +23,10 @@
   <parent>
     <groupId>org.xwiki.contrib</groupId>
     <artifactId>api-uin-scriptservice</artifactId>
-    <version>2.2-SNAPSHOT</version>
+    <version>2.2-rc-1</version>
   </parent>
   <artifactId>api-uin-scriptservice-api</artifactId>
-  <version>2.2-SNAPSHOT</version>
+  <version>2.2-rc-1</version>
   <packaging>jar</packaging>
   <name>UIN Script Service - API</name>
   <description>Script service to generate incremental unique identification numbers</description>

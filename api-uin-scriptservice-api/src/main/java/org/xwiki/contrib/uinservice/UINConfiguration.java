@@ -124,7 +124,7 @@ public class UINConfiguration
             }
             if (this.configObj == null) {
                 throw new RuntimeException(
-                    String.format("UIN configuration object for name [{}] cannot be found.", tempName));
+                    String.format("UIN configuration object for name [%s] cannot be found.", tempName));
             }
         } catch (XWikiException e) {
             LOGGER.error("Failed to get configuration document for reference [{}]", configRef, e);

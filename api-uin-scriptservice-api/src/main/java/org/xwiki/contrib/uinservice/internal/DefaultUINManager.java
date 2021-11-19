@@ -134,6 +134,7 @@ public class DefaultUINManager implements UINManager
                     if (Objects.equal(uinName, name)) {
                         return false;
                     }
+                    return true;
                 }
             }
         }

@@ -45,11 +45,12 @@ public class DefaultUINResource extends XWikiResource implements UINResource
     private UINManager manager;
 
     @Override
-    public long getUIN(String xwikiName, String spaceName, String pageName, String token) throws XWikiRestException
+    public long getUIN(String xwikiName, String spaceName, String pageName, String name, String token)
+        throws XWikiRestException
     {
         try {
-            if (manager.isTokenValid(token)) {
-                return manager.getNext();
+            if (manager.isTokenValid(name, token)) {
+                return manager.getNext(name);
             }
             throw new XWikiRestException();
         } catch (XWikiException e) {

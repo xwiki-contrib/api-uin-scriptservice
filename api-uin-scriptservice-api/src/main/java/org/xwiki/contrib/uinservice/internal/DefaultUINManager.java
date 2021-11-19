@@ -155,9 +155,9 @@ public class DefaultUINManager implements UINManager
     }
 
     @Override
-    public boolean isTokenValid(String token)
+    public boolean isTokenValid(String name, String token)
     {
-        UINConfiguration config = new UINConfiguration(xcontextProvider.get());
+        UINConfiguration config = new UINConfiguration(xcontextProvider.get(), name);
         String storedToken = config.getToken();
         if (Objects.equal(token, storedToken) || Objects.equal("", storedToken)) {
             return true;

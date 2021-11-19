@@ -87,8 +87,9 @@ public interface UINManager
      * Check if the given <code>token</code> matches the internally stored token associated with the current UIN
      * configuration.
      *
+     * @param name the configuration name
      * @param token the token from the request
      * @return {@code true} if the given token is correct, {@code false} otherwise
      */
-    boolean isTokenValid(String token);
+    boolean isTokenValid(String name, String token);
 }

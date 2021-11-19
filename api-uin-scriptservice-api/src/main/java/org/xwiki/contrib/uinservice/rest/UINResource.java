@@ -41,6 +41,7 @@ public interface UINResource
      * @param xwikiName the name of the wiki
      * @param spaceName the spaces
      * @param pageName the name of the page
+     * @param name the name of the configuration
      * @param token the secret token
      * @return the next UIN
      * @throws XWikiRestException in case of exceptions
@@ -49,6 +50,7 @@ public interface UINResource
         @PathParam("wikiName") String xwikiName,
         @PathParam("spaceName") String spaceName,
         @PathParam("pageName") String pageName,
+        @QueryParam("name") String name,
         @QueryParam("token") String token
     ) throws XWikiRestException;
 }

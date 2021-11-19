@@ -32,6 +32,7 @@
   <name>UIN Script Service - Parent POM</name>
   <description>Script service to generate incremental unique identification numbers</description>
   <properties>
+    <xwiki.revapi.skip>true</xwiki.revapi.skip>
     <xwiki.extension.features>dgervalle:uin-script-service</xwiki.extension.features>
     <xwiki.issueManagement.jira.id>UINSCRIPT</xwiki.issueManagement.jira.id>
     <!-- Enable auto release on jira. -->

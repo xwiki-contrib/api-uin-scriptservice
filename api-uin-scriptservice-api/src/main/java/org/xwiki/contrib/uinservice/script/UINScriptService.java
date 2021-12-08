@@ -81,10 +81,10 @@ public class UINScriptService implements ScriptService
      * @param newUIN the new starting index value
      * @param increment the incremental step
      * @throws DuplicateKeyException in case of duplicate configuration name
-     * @throws XWikiException in case of exceptions
+     * @throws Exception in case of exceptions
      */
     public void updateConfig(String previousName, String newName, long currentUIN, long newUIN, long increment)
-        throws DuplicateKeyException, XWikiException
+        throws DuplicateKeyException, Exception
     {
         updateConfig(previousName, newName, currentUIN, newUIN, increment, "");
     }
@@ -99,10 +99,10 @@ public class UINScriptService implements ScriptService
      * @param increment the incremental step
      * @param token the secret token
      * @throws DuplicateKeyException in case of duplicate configuration name
-     * @throws XWikiException in case of exceptions
+     * @throws Exception in case of exceptions
      */
     public void updateConfig(String previousName, String newName, long currentUIN, long newUIN, long increment,
-        String token) throws DuplicateKeyException, XWikiException
+        String token) throws DuplicateKeyException, Exception
     {
         uinManager.updateConfig(previousName, newName, currentUIN, newUIN, increment, token);
     }
@@ -122,9 +122,9 @@ public class UINScriptService implements ScriptService
      * Get the next UIN.
      *
      * @return the next UIN
-     * @throws XWikiException in case of exceptions
+     * @throws Exception in case of exceptions
      */
-    public long getNext() throws XWikiException
+    public long getNext() throws Exception
     {
         return uinManager.getNext();
     }
@@ -134,9 +134,9 @@ public class UINScriptService implements ScriptService
      *
      * @param name the name of the configuration
      * @return the next UIN
-     * @throws XWikiException in case of exceptions
+     * @throws Exception in case of exceptions
      */
-    public long getNext(String name) throws XWikiException
+    public long getNext(String name) throws Exception
     {
         return uinManager.getNext(name);
     }

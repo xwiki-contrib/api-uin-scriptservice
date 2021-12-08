@@ -70,7 +70,7 @@ public class DefaultUINManager implements UINManager
 
     @Override
     public synchronized void updateConfig(String previousName, String newName, long currentUIN, long newUIN,
-        long increment, String token) throws DuplicateKeyException, XWikiException
+        long increment, String token) throws Exception
     {
         XWikiContext xcontext = xcontextProvider.get();
         UINConfiguration config = new UINConfiguration(xcontext, previousName);
@@ -143,25 +143,25 @@ public class DefaultUINManager implements UINManager
     }
 
     @Override
-    public synchronized long getNext() throws XWikiException
+    public synchronized long getNext() throws Exception
     {
         return new UINConfiguration(xcontextProvider.get()).incrementCurrentUIN();
     }
 
     @Override
-    public synchronized long getNext(String name) throws XWikiException
+    public synchronized long getNext(String name) throws Exception
     {
         return new UINConfiguration(xcontextProvider.get(), name).incrementCurrentUIN();
     }
 
     @Override
-    public boolean isTokenValid(String name, String token)
+    public boolean isTokenValid(String name, String token) throws Exception
     {
         UINConfiguration config = new UINConfiguration(xcontextProvider.get(), name);
         String storedToken = config.getToken();
         if (Objects.equal(token, storedToken) || Objects.equal("", storedToken)) {
             return true;
         }
-        return false;
+        throw new Exception(String.format("Invalid token for configuration name [%s].", name));
     }
 }

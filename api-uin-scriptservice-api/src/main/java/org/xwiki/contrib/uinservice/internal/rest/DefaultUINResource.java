@@ -28,8 +28,6 @@ import org.xwiki.contrib.uinservice.rest.UINResource;
 import org.xwiki.rest.XWikiResource;
 import org.xwiki.rest.XWikiRestException;
 
-import com.xpn.xwiki.XWikiException;
-
 /**
  * Default implementation of {@link UINResource}.
  *
@@ -45,16 +43,16 @@ public class DefaultUINResource extends XWikiResource implements UINResource
     private UINManager manager;
 
     @Override
-    public long getUIN(String xwikiName, String spaceName, String pageName, String name, String token)
+    public String getUIN(String xwikiName, String spaceName, String pageName, String name, String token)
         throws XWikiRestException
     {
         try {
             if (manager.isTokenValid(name, token)) {
-                return manager.getNext(name);
+                return String.format("{\"uin\": %s}", manager.getNext(name));
             }
-            throw new XWikiRestException();
-        } catch (XWikiException e) {
-            throw new XWikiRestException(e);
+        } catch (Exception e) {
+            throw new XWikiRestException(e.getMessage());
         }
+        throw new XWikiRestException("Failed to get UIN!");
     }
 }

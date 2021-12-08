@@ -21,8 +21,6 @@ package org.xwiki.contrib.uinservice;
 
 import java.util.Date;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.model.reference.LocalDocumentReference;
 
@@ -81,11 +79,6 @@ public class UINConfiguration
     public static final LocalDocumentReference CONFIGCLASS_REF =
         new LocalDocumentReference(CONFIG_SPACE, CONFIG_CLASSNAME);
 
-    /**
-     * Logging tool.
-     */
-    private static final Logger LOGGER = LoggerFactory.getLogger(UINConfiguration.class);
-
     private XWikiContext xcontext;
 
     private XWikiDocument configDoc;
@@ -94,8 +87,9 @@ public class UINConfiguration
 
     /**
      * @param xcontext the current context
+     * @throws Exception in case of exceptions
      */
-    public UINConfiguration(XWikiContext xcontext)
+    public UINConfiguration(XWikiContext xcontext) throws Exception
     {
         this(xcontext, "");
     }
@@ -103,31 +97,30 @@ public class UINConfiguration
     /**
      * @param xcontext the current context
      * @param name the configuration name
+     * @throws XWikiException in case of exceptions
+     * @throws Exception in case of exceptions
      */
-    public UINConfiguration(XWikiContext xcontext, String name)
+    public UINConfiguration(XWikiContext xcontext, String name) throws Exception, XWikiException
     {
         String tempName = name == null ? "" : name;
         this.xcontext = xcontext;
         DocumentReference configRef = new DocumentReference(xcontext.getWikiId(), CONFIG_SPACE, CONFIG_DOCNAME);
-        try {
-            this.configDoc = xcontext.getWiki().getDocument(configRef, xcontext);
-            if (this.configDoc.isNew()) {
-                throw new RuntimeException("UIN configuration cannot be found");
-            }
-            for (BaseObject obj : this.configDoc.getXObjects(CONFIGCLASS_REF)) {
-                if (obj != null) {
-                    String uinName = obj.getStringValue(NAME_PROPERTY);
-                    if (Objects.equal(uinName, tempName)) {
-                        this.configObj = obj;
-                    }
+
+        this.configDoc = xcontext.getWiki().getDocument(configRef, xcontext);
+
+        if (this.configDoc.isNew()) {
+            throw new Exception("UIN configuration cannot be found");
+        }
+        for (BaseObject obj : this.configDoc.getXObjects(CONFIGCLASS_REF)) {
+            if (obj != null) {
+                String uinName = obj.getStringValue(NAME_PROPERTY);
+                if (Objects.equal(uinName, tempName)) {
+                    this.configObj = obj;
                 }
             }
-            if (this.configObj == null) {
-                throw new RuntimeException(
-                    String.format("UIN configuration object for name [%s] cannot be found.", tempName));
-            }
-        } catch (XWikiException e) {
-            LOGGER.error("Failed to get configuration document for reference [{}]", configRef, e);
+        }
+        if (this.configObj == null) {
+            throw new Exception(String.format("UIN configuration object for name [%s] cannot be found.", tempName));
         }
     }
 

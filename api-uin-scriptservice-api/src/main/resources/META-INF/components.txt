@@ -1,3 +1,9 @@
 org.xwiki.contrib.uinservice.internal.DefaultUINManager
+org.xwiki.contrib.uinservice.internal.GaplessUINManager
+org.xwiki.contrib.uinservice.internal.SimpleUINManager
+org.xwiki.contrib.uinservice.internal.listeners.FetchUINManagerListener
+org.xwiki.contrib.uinservice.internal.listeners.DefaultUINManagerConfigClassInitializer
+org.xwiki.contrib.uinservice.internal.listeners.GaplessUINManagerConfigClassInitializer
+org.xwiki.contrib.uinservice.internal.listeners.GaplessUINSequenceClassInitializer
 org.xwiki.contrib.uinservice.internal.rest.DefaultUINResource
 org.xwiki.contrib.uinservice.script.UINScriptService

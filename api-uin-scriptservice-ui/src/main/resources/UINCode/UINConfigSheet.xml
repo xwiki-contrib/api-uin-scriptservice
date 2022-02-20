@@ -50,72 +50,148 @@
   Please only change it when you know what you are doing.
 {{/warning}}
 
-#if ($request.action == 'Update' &amp;&amp; $services.security.authorization.hasAccess('admin', $confDoc.documentReference) &amp;&amp; ($xcontext.action == 'view' || $xcontext.action == 'admin'))
+#if ("$!request.action" != '' &amp;&amp; $services.security.authorization.hasAccess('admin', $confDoc.documentReference) &amp;&amp; ($xcontext.action == 'view' || $xcontext.action == 'admin'))
+
+== Handling $request.action ==
+
   #try()
-    #set ($integer = 1)
-    #set ($long = $integer.longValue())
-    #if ($request.get('previousUIN') != '')
-      #set ($currentUIN = $long.parseLong($request.get('previousUIN')))
-    #else
-      #set ($currentUIN = 0)
+    #if ($request.action == 'Update')
+      #set ($integer = 1)
+      #set ($long = $integer.longValue())
+      #if ($request.get('previousUIN') != '')
+        #set ($currentUIN = $long.parseLong($request.get('previousUIN')))
+      #else
+        #set ($currentUIN = 0)
+      #end
+      #set ($newUIN = $long.parseLong($request.get('currentUIN')))
+      #set ($increment = $long.parseLong($request.get('increment')))
+      #set ($uinName = $request.get('name'))
+      #set ($uinPreviousName = $request.get('previousName'))
+      #set ($token = $request.get('token'))
+      #if ("$currentUIN" != "" &amp;&amp; "$newUIN" != "" &amp;&amp; "$increment" != "")
+        #set ($discard = $services.uin.updateConfig($uinPreviousName, $uinName, $currentUIN, $newUIN, $increment, $token))
+      #end
     #end
-    #set ($newUIN = $long.parseLong($request.get('currentUIN')))
-    #set ($increment = $long.parseLong($request.get('increment')))
-    #set ($uinName = $request.get('name'))
-    #set ($uinPreviousName = $request.get('previousName'))
-    #set ($token = $request.get('token'))
-    #if ("$currentUIN" != "" &amp;&amp; "$newUIN" != "" &amp;&amp; "$increment" != "")
-      #set ($discard = $services.uin.updateConfig($uinPreviousName, $uinName, $currentUIN, $newUIN, $increment, $token))
+    #if ($request.action == 'Remove')
+      #set ($uinName = "$!request.get('previousName')")
+      #set ($discard = $services.uin.removeConfig($uinName))
+    #end
+    #if ($request.action == 'Create')
+      #set ($integer = 1)
+      #set ($long = $integer.longValue())
+      #set ($newUIN = $long.parseLong("$!request.get('new_currentUIN')"))
+      #set ($increment = $long.parseLong("$!request.get('new_increment')"))
+      #set ($uinName = "$!request.get('new_name')")
+      #set ($token = "$!request.get('new_token')")
+      #set ($discard = $services.uin.createConfig($uinName, $newUIN, $increment, $token))
+    #end
+    ## XXX fishy: we bypass the script service in this case
+    #if ($request.action == 'Update GaplessUIN Config')
+      #if($services.csrf.isTokenValid($request.get('form_token')))
+        #set($confDoc = $xwiki.getDocument('UINCode.UINConfig'))
+        #if($request.addObjects)
+          #set($obj = $confDoc.addObjectFromRequest('UINCode.GaplessUINConfigClass'))
+        #else
+          #set($obj = $confDoc.updateObjectFromRequest('UINCode.GaplessUINConfigClass'))
+        #end
+        #set($discard = $confDoc.save('gapless uin config update', true))
+      #else
+        ## this does not work, but we get some error message at least
+        #set($exception = "CSRF check failed!")
+      #end
+    #end
+    #if ($request.action == 'Choose')
+      #set($discard = $services.uin.setActiveStrategy($request.uinManager))
     #end
   #end
   #if ("$!exception" != '')
-
     #if ($exception.getCause().class.getName() == 'java.util.ConcurrentModificationException')
       {{error}}
         Concurrent modification of UIN detected, cannot proceed with update. Please retry.
       {{/error}}
-    #elseif ($exception.getCause().class.getName() != 'java.lang.NumberFormatException')
-      {{html}}
-        #displayUnhandledException($exception)
-      {{/html}}
-    #end
-  #end
-#end
-#if ($request.action == 'Remove' &amp;&amp; $services.security.authorization.hasAccess('admin', $confDoc.documentReference) &amp;&amp; ($xcontext.action == 'view' || $xcontext.action == 'admin'))
-  #try()
-    #set ($uinName = "$!request.get('previousName')")
-    #set ($discard = $services.uin.removeConfig($uinName))
-  #end
-  #if ("$!exception" != '')
-
-    #if ($exception.getCause().class.getName() == 'java.util.ConcurrentModificationException')
-      {{error}}
-        Concurrent modification of UIN detected, cannot proceed with update. Please retry.
-      {{/error}}
+    #elseif ($exception.getCause().class.getName() == 'java.lang.NumberFormatException')
+      {{error}}Please give numbers for the increment and current UID{{/error}}
     #else
       {{html}}
         #displayUnhandledException($exception)
       {{/html}}
     #end
+  #else
+     {{info}} $services.rendering.escape($request.action, $doc.syntax) action performed successfully. {{/info}}
   #end
 #end
-#if ($request.action == 'Create' &amp;&amp; $services.security.authorization.hasAccess('admin', $confDoc.documentReference) &amp;&amp; ($xcontext.action == 'view' || $xcontext.action == 'admin'))
-  #try()
-    #set ($integer = 1)
-    #set ($long = $integer.longValue())
-    #set ($newUIN = $long.parseLong("$!request.get('new_currentUIN')"))
-    #set ($increment = $long.parseLong("$!request.get('new_increment')"))
-    #set ($uinName = "$!request.get('new_name')")
-    #set ($token = "$!request.get('new_token')")
-    #set ($discard = $services.uin.createConfig($uinName, $newUIN, $increment, $token))
-  #end
-  #if ("$!exception" != '')
 
-    {{html}}
-    #displayUnhandledException($exception)
-    {{/html}}
-  #end
+== UIN Generation Strategy ==
+
+{{html wiki="false" clean="false"}}
+&lt;form class="xform xformInline" action="#" method="POST"&gt;
+#set($configNames = $services.uin.availableStrategies)
+#set($activeName = $services.uin.activeStrategy)
+&lt;dl&gt;
+&lt;dt&gt;Manager&lt;/dt&gt;
+&lt;dd&gt;&lt;select name="uinManager"&gt;
+#foreach($name in $configNames)
+  #set($lastDotIndex = $name.lastIndexOf('.')+1)
+  #set($shortName = $name.substring($lastDotIndex, $name.length()))
+  &lt;option #if($name == $activeName) selected="selected"#end value="$escapetool.xml($name)"&gt;$escapetool.xml($shortName)&lt;/option&gt;
 #end
+&lt;/select&gt;
+&lt;/dd&gt;
+&lt;/dl&gt;
+
+&lt;div class="button-wrapper"&gt;
+  &lt;input class="button" name="action" type="submit" value="Choose" /&gt;
+&lt;/div&gt;
+&lt;/form&gt;
+{{/html}}
+
+#if($activeName == "org.xwiki.contrib.uinservice.GaplessUINManager")
+== Configuration for GaplessUINManager ==
+
+#if ($services.security.authorization.hasAccess('admin', $confDoc.documentReference) &amp;&amp; ($xcontext.action == 'view' || $xcontext.action == 'admin'))
+  #set($mode = "edit")
+#else
+  #set($mode = "view")
+#end
+#set($className = 'UINCode.GaplessUINConfigClass')
+#set($confDoc = $xwiki.getDocument('UINCode.UINConfig'))
+#set($obj = $confDoc.getObject($className))
+#set($create = ($obj == $NULL &amp;&amp; $mode == "edit"))
+#if($create)
+  #set($obj = $confDoc.newObject($className))
+#end
+#set($discard = $confDoc.use($obj))
+#set($class = $obj.xWikiClass)
+
+#if($mode == "edit")
+  {{html clean="false" wiki="false"}}
+    &lt;form class="xform xformInline" action="#" method="POST"&gt;
+  {{/html}}
+#end
+
+  #foreach($prop in $class.properties)
+    ; $prop.prettyName
+    : $confDoc.display($prop.getName(), $mode)
+  #end
+
+#if($mode == "edit")
+  {{html clean="false" wiki="false"}}
+      &lt;div class="button-wrapper"&gt;
+        &lt;input class="button" name="button" type="submit" value="Update" /&gt;
+      &lt;/div&gt;
+      #if($create)
+        &lt;input type="hidden" name="addedObjects" value="${className}_${obj.number}"/&gt;
+      #end
+      &lt;input type="hidden" name="action" value="Update GaplessUIN Config" /&gt;
+      &lt;input type="hidden" name="form_token" value="${services.csrf.token}"/&gt;
+    &lt;/form&gt;
+  {{/html}}
+#end
+
+#end
+#if($activeName == "org.xwiki.contrib.uinservice.SimpleUINManager")
+== Configuration for SimpleUINManager ==
+
 #set($confDoc = $xwiki.getDocument('UINCode.UINConfig'))
 #foreach($obj in $confDoc.getObjects('UINCode.UINConfigClass'))
 #set($class = $obj.xWikiClass)
@@ -166,5 +242,8 @@
 &lt;/div&gt;
 &lt;/form&gt;
 {{/html}}
+
+#end
+
 {{/velocity}}</content>
 </xwikidoc>

@@ -75,13 +75,30 @@ public interface UINManager
     long getNext() throws Exception;
 
     /**
-     * Get the next UIN.
+     * Get the next UIN for the given name.
      *
      * @param name the name of the configuration
      * @return the next UIN
      * @throws Exception in case of exceptions
      */
     long getNext(String name) throws Exception;
+
+    /**
+     * Get the next UIN for the given name and other parameters.
+     *
+     * @param name the name of the configuration
+     * @param server the server from which the id is requested
+     * @param clientId the client requesting the id
+     * @param id optional; if given, check if this id is valid / reserved
+     *    and in that case return this id (and not a new one)
+     * @param simulate generate a new id, but do not store it
+     * @return the next UIN
+     * @throws Exception in case of exceptions
+     */
+    default long getNext(String name, String server, String clientId, Long id, boolean simulate) throws Exception
+    {
+        return getNext(name);
+    }
 
     /**
      * Check if the given <code>token</code> matches the internally stored token associated with the current UIN

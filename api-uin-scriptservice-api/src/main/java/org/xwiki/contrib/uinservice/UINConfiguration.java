@@ -20,11 +20,11 @@
 package org.xwiki.contrib.uinservice;
 
 import java.util.Date;
+import java.util.Objects;
 
 import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.model.reference.LocalDocumentReference;
 
-import com.google.common.base.Objects;
 import com.xpn.xwiki.XWikiContext;
 import com.xpn.xwiki.XWikiException;
 import com.xpn.xwiki.doc.XWikiDocument;
@@ -32,6 +32,8 @@ import com.xpn.xwiki.objects.BaseObject;
 
 /**
  * A UIN configuration instance.
+ * This class is used by the default "simple" strategy,
+ * and might be less useful for other strategies.
  *
  * @version $Id$
  * @since 2.2
@@ -114,7 +116,7 @@ public class UINConfiguration
         for (BaseObject obj : this.configDoc.getXObjects(CONFIGCLASS_REF)) {
             if (obj != null) {
                 String uinName = obj.getStringValue(NAME_PROPERTY);
-                if (Objects.equal(uinName, tempName)) {
+                if (Objects.equals(uinName, tempName)) {
                     this.configObj = obj;
                 }
             }
@@ -182,10 +184,13 @@ public class UINConfiguration
 
     /**
      * @param token the secret token
+     * @throws XWikiException when setting the token value fails
      */
-    public void setToken(String token)
+    public void setToken(String token) throws XWikiException
     {
-        this.configObj.setStringValue(TOKEN_PROPERY, token);
+        // set the token via the generic "set"-method to avoid saving
+        // the prefilled dummy value from the password field
+        configObj.set(TOKEN_PROPERY, token, xcontext);
     }
 
     /**
@@ -196,11 +201,12 @@ public class UINConfiguration
     {
         long currentUIN = getCurrentUIN() + getIncrement();
         this.configObj.setLongValue(CURRENT_UIN_PROPERTY, currentUIN);
-        saveWithoutHistory(this.configDoc, this.xcontext);
+        saveWithoutHistory();
         return currentUIN;
     }
 
-    private void saveWithoutHistory(XWikiDocument configDoc, XWikiContext xcontext) throws XWikiException
+    // note: has copy & paste in AbstractUINManager
+    private void saveWithoutHistory() throws XWikiException
     {
         this.configDoc.setContentUpdateDate(new Date());
         this.configDoc.setMetaDataDirty(false);

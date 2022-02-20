@@ -19,15 +19,23 @@
  */
 package org.xwiki.contrib.uinservice.script;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Provider;
 import javax.inject.Singleton;
 
 import org.xwiki.component.annotation.Component;
 import org.xwiki.contrib.uinservice.DuplicateKeyException;
 import org.xwiki.contrib.uinservice.UINManager;
+import org.xwiki.contrib.uinservice.internal.DefaultUINManager;
 import org.xwiki.script.service.ScriptService;
+import org.xwiki.security.authorization.AccessDeniedException;
+import org.xwiki.security.authorization.AuthorizationManager;
+import org.xwiki.security.authorization.Right;
 
+import com.xpn.xwiki.XWikiContext;
 import com.xpn.xwiki.XWikiException;
 
 /**
@@ -40,7 +48,14 @@ import com.xpn.xwiki.XWikiException;
 public class UINScriptService implements ScriptService
 {
     @Inject
+    @Named("default")
     private UINManager uinManager;
+
+    @Inject
+    private AuthorizationManager authManager;
+
+    @Inject
+    private Provider<XWikiContext> contextProvider;
 
     /**
      * Create a new UIN configuration.
@@ -139,5 +154,36 @@ public class UINScriptService implements ScriptService
     public long getNext(String name) throws Exception
     {
         return uinManager.getNext(name);
+    }
+
+    /**
+     * Get a list of available names for UIN generation strategies.
+     * @return a list of strategy names
+     */
+    public List<String> getAvailableStrategies()
+    {
+        return ((DefaultUINManager) uinManager).getAvailableStrategies();
+    }
+
+    /**
+     * Get the active UIN generation strategy name.
+     * @return the name of the currently active strategy
+     */
+    public String getActiveStrategy()
+    {
+        return ((DefaultUINManager) uinManager).getActiveStrategy();
+    }
+
+    /**
+     * Allow to change the given strategy.
+     * @param strategyName the name of currently active strategy
+     * @throws AccessDeniedException if the current user is not admin
+     * @throws XWikiException if anything else with setting the strategy goes wrong
+     */
+    public void setActiveStrategy(String strategyName) throws AccessDeniedException, XWikiException
+    {
+        authManager.checkAccess(Right.ADMIN, contextProvider.get().getUserReference(),
+            contextProvider.get().getWikiReference());
+        ((DefaultUINManager) uinManager).setActiveStrategy(strategyName);
     }
 }

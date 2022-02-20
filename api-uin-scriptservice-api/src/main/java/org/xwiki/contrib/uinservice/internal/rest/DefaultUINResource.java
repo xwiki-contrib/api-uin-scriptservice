@@ -19,14 +19,28 @@
  */
 package org.xwiki.contrib.uinservice.internal.rest;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Provider;
 import javax.inject.Singleton;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.slf4j.Logger;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.contrib.uinservice.UINManager;
 import org.xwiki.contrib.uinservice.rest.UINResource;
 import org.xwiki.rest.XWikiResource;
 import org.xwiki.rest.XWikiRestException;
+import org.xwiki.wiki.descriptor.WikiDescriptor;
+import org.xwiki.wiki.descriptor.WikiDescriptorManager;
+
+import com.xpn.xwiki.XWikiContext;
 
 /**
  * Default implementation of {@link UINResource}.
@@ -39,20 +53,63 @@ import org.xwiki.rest.XWikiRestException;
 @Singleton
 public class DefaultUINResource extends XWikiResource implements UINResource
 {
+    private static final String RESULT_KEY_UIN = "uin";
+
+    private static final String RESULT_KEY_ERROR = "error";
+
     @Inject
+    @Named("default")
     private UINManager manager;
 
+    @Inject
+    private WikiDescriptorManager wikiManager;
+
+    @Inject
+    private Provider<XWikiContext> contextProvider;
+
+    @Inject
+    private Logger logger;
+
     @Override
-    public String getUIN(String xwikiName, String spaceName, String pageName, String name, String token)
+    public Object getUIN(String xwikiName, String spaceName, String pageName, String name, String token,
+        String clientId, String server, String idStr, String simulate)
         throws XWikiRestException
     {
+        logger.trace("getUIN called with name [{}], clientid [{}], server [{}], id [{}], simulate [{}]",
+            name, clientId, server, idStr, simulate);
+        final Map<String, Object> result = new HashMap<String, Object>();
+        final XWikiContext context = contextProvider.get();
+        final String currentWiki = context.getWikiId();
+
         try {
-            if (manager.isTokenValid(name, token)) {
-                return String.format("{\"uin\": %s}", manager.getNext(name));
+            WikiDescriptor wiki = wikiManager.getById(xwikiName);
+            if (wiki == null) {
+                throw new WebApplicationException(Response.Status.NOT_FOUND);
             }
+            context.setWikiId(wiki.getId());
+
+            if (manager.isTokenValid(name, token)) {
+                Long givenId = null;
+                if (idStr != null) {
+                    givenId = Long.parseLong(idStr, 10);
+                }
+                long newId = manager.getNext(name, server, clientId, givenId, StringUtils.isNotEmpty(simulate));
+                result.put(RESULT_KEY_UIN, newId);
+            } else {
+                result.put(RESULT_KEY_ERROR, String.format("Invalid token for configuration name [%s]", name));
+            }
+        } catch (IllegalStateException ie) {
+            logger.info("send client error [{}]", ie.getMessage());
+            result.put(RESULT_KEY_ERROR, ie.getMessage());
+        } catch (WebApplicationException we) {
+            throw we;
         } catch (Exception e) {
+            logger.info("client [{}] caused error [{}]", server, ExceptionUtils.getRootCause(e).toString());
             throw new XWikiRestException(e.getMessage());
+        } finally {
+            context.setWikiId(currentWiki);
         }
-        throw new XWikiRestException("Failed to get UIN!");
+        logger.trace("result is [{}]", result);
+        return result;
     }
 }

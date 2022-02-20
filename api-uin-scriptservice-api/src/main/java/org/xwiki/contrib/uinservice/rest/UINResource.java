@@ -44,16 +44,24 @@ public interface UINResource
      * @param pageName the name of the page
      * @param name the name of the configuration
      * @param token the secret token
-     * @return the next UIN
+     * @param clientId optional (depending on the used uin manager) the resource requesting the id, e.g. the wiki page
+     * @param server optional; an identifier for the calling side
+     * @param id optional; if present, check if this id is valid
+     * @param simulate optional; if present and not empty, then only simulate the action, do not create a new id
+     * @return the next UIN or an error message
      * @throws XWikiRestException in case of exceptions
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    String getUIN(
+    Object getUIN(
         @PathParam("wikiName") String xwikiName,
         @PathParam("spaceName") String spaceName,
         @PathParam("pageName") String pageName,
         @QueryParam("name") String name,
-        @QueryParam("token") String token
+        @QueryParam("token") String token,
+        @QueryParam("clientid") String clientId,
+        @QueryParam("server") String server,
+        @QueryParam("id") String id,
+        @QueryParam("simulate") String simulate
     ) throws XWikiRestException;
 }

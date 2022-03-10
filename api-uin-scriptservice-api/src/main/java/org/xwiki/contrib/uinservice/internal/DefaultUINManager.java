@@ -109,6 +109,12 @@ public class DefaultUINManager extends AbstractUINManager implements UINManager
         return getManager().isTokenValid(name, token);
     }
 
+    @Override
+    public List<? extends Object> getUIDsForName(String name) throws Exception
+    {
+        return getManager().getUIDsForName(name);
+    }
+
     /**
      * The list of available ways to create unique numbers.
      *
@@ -232,5 +238,4 @@ public class DefaultUINManager extends AbstractUINManager implements UINManager
         }
         return obj;
     }
-
 }

@@ -20,6 +20,7 @@
 package org.xwiki.contrib.uinservice.internal;
 
 import java.util.ConcurrentModificationException;
+import java.util.List;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -151,4 +152,9 @@ public class SimpleUINManager extends AbstractUINManager implements UINManager
         return (Objects.equal(token, storedToken) || Objects.equal("", storedToken));
     }
 
+    @Override
+    public List<Object> getUIDsForName(String name)
+    {
+        throw new UnsupportedOperationException("getUIDsForName");
+    }
 }

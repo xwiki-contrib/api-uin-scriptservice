@@ -26,7 +26,6 @@
     <version>2.3-SNAPSHOT</version>
   </parent>
   <artifactId>api-uin-scriptservice-api</artifactId>
-  <version>2.3-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>UIN Script Service - API</name>
   <description>Script service to generate incremental unique identification numbers</description>

@@ -19,7 +19,10 @@
  */
 package org.xwiki.contrib.uinservice.internal;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -143,6 +146,43 @@ public class GaplessUINManager extends AbstractUINManager implements UINManager
                 }
             }
         }
+        return result;
+    }
+
+    @Override
+    public List<? extends Object> getUIDsForName(String name) throws QueryException
+    {
+        List<Map<? extends Object, ? extends Object>> result = new ArrayList<>();
+
+        XWikiContext context = getContext();
+        SpaceReference dataSpaceRef = new SpaceReference(context.getWikiId(), DATA_SPACE_NAME, name);
+
+        String hqlQuery = "select uin.value, clientid.value, server.value"
+            + " from BaseObject obj, XWikiDocument doc, LongProperty uin,"
+            + " StringProperty clientid, StringProperty server where doc.space = :dataSpace2"
+            + " and doc.fullName = obj.name and obj.className = :className"
+            + " and obj.id = uin.id.id and uin.id.name = :uinName"
+            + " and obj.id = clientid.id.id and clientid.id.name = :clientidName"
+            + " and obj.id = server.id.id and server.id.name = :serverName"
+            + " order by uin.value";
+
+        Query query = queries.createQuery(hqlQuery, Query.HQL)
+            .bindValue("dataSpace2", refToString.serialize(dataSpaceRef))
+            .bindValue("className", GaplessUINSequenceClassInitializer.CONFIG_CLASS_FULLNAME)
+            .bindValue("uinName", GaplessUINSequenceClassInitializer.PROPERTY_UIN)
+            .bindValue("clientidName", GaplessUINSequenceClassInitializer.PROPERTY_CLIENT)
+            .bindValue("serverName", GaplessUINSequenceClassInitializer.PROPERTY_SERVER);
+
+        for (Object res : query.execute()) {
+            Object[] results = (Object[]) res;
+            Map<String, Object> data = new HashMap<>();
+            data.put("uin", (Long) results[0]);
+            data.put("clientId", results[1]);
+            data.put("server", results[2]);
+
+            result.add(data);
+        }
+
         return result;
     }
 

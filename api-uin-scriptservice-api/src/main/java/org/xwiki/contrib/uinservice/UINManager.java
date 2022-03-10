@@ -19,6 +19,8 @@
  */
 package org.xwiki.contrib.uinservice;
 
+import java.util.List;
+
 import org.xwiki.component.annotation.Role;
 
 import com.xpn.xwiki.XWikiException;
@@ -111,4 +113,12 @@ public interface UINManager
      * @throws Exception in case of exceptions
      */
     boolean isTokenValid(String name, String token) throws XWikiException, Exception;
+
+    /**
+     * Return information about all the generated UIDs so far. (Optional operation.)
+     * @param name the name of the sequence.
+     * @return a list of maps having keys 'uin', 'clientId' and 'server'.
+     * @throws Exception in case of exceptions
+     */
+    List<? extends Object> getUIDsForName(String name) throws Exception;
 }

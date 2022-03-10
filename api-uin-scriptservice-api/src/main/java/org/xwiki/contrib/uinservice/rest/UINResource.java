@@ -32,10 +32,21 @@ import org.xwiki.stability.Unstable;
  * @version $Id$
  * @since 2.2
  */
-@Path("/wikis/{wikiName}/spaces/{spaceName: .+}/pages/{pageName}/uin")
+@Path("/wikis/{wikiName}/spaces/{spaceName: .+}/pages/{pageName}")
 @Unstable
 public interface UINResource
 {
+    /**
+     * The key to store error messages.
+     */
+    String RESULT_KEY_ERROR = "error";
+
+    /**
+     * The key to store values.
+     * This is only used by the /uinlist endpoint yet.
+     */
+    String RESULT_KEY_UIN_VALUES = "values";
+
     /**
      * Get the next available UIN.
      * 
@@ -52,6 +63,7 @@ public interface UINResource
      * @throws XWikiRestException in case of exceptions
      */
     @GET
+    @Path("/uin")
     @Produces(MediaType.APPLICATION_JSON)
     Object getUIN(
         @PathParam("wikiName") String xwikiName,
@@ -64,4 +76,32 @@ public interface UINResource
         @QueryParam("id") String id,
         @QueryParam("simulate") String simulate
     ) throws XWikiRestException;
+
+    /**
+     * Return a list of all uins with their data for the given sequence name.
+     * The returned value is a map with either an "errorMessage" key
+     * of a "values" key containing a list of items,
+     * which in turn have an 'uin', 'clientId' and 'server' entry,
+     * sorted by id.
+     *
+     * @param xwikiName the name of the wiki
+     * @param spaceName the name of the spaces
+     * @param pageName the page of the page
+     * @param name the name of the UID sequence
+     * @param token (optional) the secret token, if necessary
+     * @return a list of { 'uin', 'clientId', 'server' } under key 'values' or an error message in key 'error'
+     * @throws XWikiRestException in case of unexpected exceptions
+     * @since 2.3
+     */
+    @GET
+    @Path("/uinlist")
+    @Produces(MediaType.APPLICATION_JSON)
+    Object getUINList(
+        @PathParam("wikiName") String xwikiName,
+        @PathParam("spaceName") String spaceName,
+        @PathParam("pageName") String pageName,
+        @QueryParam("name") String name,
+        @QueryParam("token") String token
+    ) throws XWikiRestException;
+
 }

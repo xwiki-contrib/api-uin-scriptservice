@@ -31,7 +31,7 @@
   <author>xwiki:XWiki.Admin</author>
   <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
   <version>1.1</version>
-  <title>#if($doc.name == 'GaplessUINSequenceSheet')GaplessUINSequence Sheet#{else}$services.display.title($doc, {'displayerHint': 'default', 'outputSyntaxId': 'plain/1.0'})#end</title>
+  <title>#if($doc.documentReference.name == 'GaplessUINSequenceSheet')GaplessUINSequence Sheet#{else}$services.display.title($doc, {'displayerHint': 'default', 'outputSyntaxId': 'plain/1.0'})#end</title>
   <comment/>
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/2.1</syntaxId>

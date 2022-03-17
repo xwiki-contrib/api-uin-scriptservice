@@ -104,7 +104,7 @@ public class GaplessUINManager extends AbstractUINManager implements UINManager
     @Override
     public long getNext() throws Exception
     {
-        return getNext("");
+        return getNext("generic");
     }
 
     @Override
@@ -117,13 +117,17 @@ public class GaplessUINManager extends AbstractUINManager implements UINManager
     public synchronized long getNext(String name, String server, String clientId, Long id, boolean simulate)
         throws Exception
     {
+        if (StringUtils.isEmpty(name)) {
+            throw new IllegalStateException(
+                String.format("name [%s] should not be empty", name));
+        }
         long result = -1;
         BaseObject sequence = loadSequence(name, clientId);
         if (id != null) {
             // check if expected sequence id matches
             if (sequence == null) {
                 throw new IllegalStateException(
-                    String.format("no sequence for name [%s] abd client [%s] found", name, clientId));
+                    String.format("no sequence for name [%s] and client [%s] found", name, clientId));
             }
             long actualId = sequence.getLongValue(GaplessUINSequenceClassInitializer.PROPERTY_UIN);
             if (actualId != id) {
@@ -263,15 +267,15 @@ public class GaplessUINManager extends AbstractUINManager implements UINManager
             needsCreate = false;
         }
 
-        if (!simulate) {
-            if (needsCreate) {
-                BaseObject config = loadConfig();
-                if (config.getIntValue(GaplessUINManagerConfigClassInitializer.PROPERTY_AUTOCREATE) == 0) {
-                    throw new IllegalStateException(
-                        String.format("cannot create new sequence for name [%s]", name));
-                }
+        if (needsCreate) {
+            BaseObject config = loadConfig();
+            if (config.getIntValue(GaplessUINManagerConfigClassInitializer.PROPERTY_AUTOCREATE) == 0) {
+                throw new IllegalStateException(
+                    String.format("cannot create new sequence for name [%s]", name));
             }
-            createSequenceObject(name, server, clientId, nextId);
+            if (!simulate) {
+                createSequenceObject(name, server, clientId, nextId);
+            }
         }
 
         return nextId;

@@ -273,9 +273,9 @@ public class GaplessUINManager extends AbstractUINManager implements UINManager
                 throw new IllegalStateException(
                     String.format("cannot create new sequence for name [%s]", name));
             }
-            if (!simulate) {
-                createSequenceObject(name, server, clientId, nextId);
-            }
+        }
+        if (!simulate) {
+            createSequenceObject(name, server, clientId, nextId);
         }
 
         return nextId;

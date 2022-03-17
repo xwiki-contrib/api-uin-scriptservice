@@ -32,6 +32,7 @@
   <properties>
     <xwiki.extension.name>UIN Script Service API</xwiki.extension.name>
     <xwiki.extension.category>API</xwiki.extension.category>
+    <xwiki.extension.namespaces>{root}</xwiki.extension.namespaces>
     <checkstyle.suppressions.location>${basedir}/src/checkstyle/checkstyle-suppressions.xml</checkstyle.suppressions.location>
   </properties>
   <dependencies>

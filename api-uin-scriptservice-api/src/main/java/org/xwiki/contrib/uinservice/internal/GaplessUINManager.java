@@ -114,13 +114,14 @@ public class GaplessUINManager extends AbstractUINManager implements UINManager
     }
 
     @Override
-    public synchronized long getNext(String name, String server, String clientId, Long id, boolean simulate)
+    public synchronized long getNext(String name, String server, String client, Long id, boolean simulate)
         throws Exception
     {
         if (StringUtils.isEmpty(name)) {
             throw new IllegalStateException(
                 String.format("name [%s] should not be empty", name));
         }
+        String clientId = (client == null) ? "" : client;
         long result = -1;
         BaseObject sequence = loadSequence(name, clientId);
         if (id != null) {

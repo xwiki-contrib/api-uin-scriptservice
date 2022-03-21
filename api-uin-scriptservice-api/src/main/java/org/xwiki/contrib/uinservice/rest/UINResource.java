@@ -32,7 +32,7 @@ import org.xwiki.stability.Unstable;
  * @version $Id$
  * @since 2.2
  */
-@Path("/wikis/{wikiName}/spaces/{spaceName: .+}/pages/{pageName}")
+@Path("/wikis/{wikiName}/")
 @Unstable
 public interface UINResource
 {
@@ -63,7 +63,7 @@ public interface UINResource
      * @throws XWikiRestException in case of exceptions
      */
     @GET
-    @Path("/uin")
+    @Path("uin")
     @Produces(MediaType.APPLICATION_JSON)
     Object getUIN(
         @PathParam("wikiName") String xwikiName,
@@ -94,7 +94,7 @@ public interface UINResource
      * @since 2.3
      */
     @GET
-    @Path("/uinlist")
+    @Path("uinlist")
     @Produces(MediaType.APPLICATION_JSON)
     Object getUINList(
         @PathParam("wikiName") String xwikiName,

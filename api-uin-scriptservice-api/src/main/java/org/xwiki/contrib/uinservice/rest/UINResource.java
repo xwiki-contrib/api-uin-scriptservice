@@ -50,7 +50,7 @@ public interface UINResource
     /**
      * Get the next available UIN.
      * 
-     * @param xwikiName the name of the wiki
+     * @param xwikiName the name of the wiki where the uin is installed
      * @param name the name of the uin sequence
      * @param token the secret token
      * @param clientId optional (depending on the used uin manager) the resource requesting the id, e.g. the wiki page
@@ -80,9 +80,7 @@ public interface UINResource
      * which in turn have an 'uin', 'clientId' and 'server' entry,
      * sorted by id.
      *
-     * @param xwikiName the name of the wiki
-     * @param spaceName the name of the spaces
-     * @param pageName the page of the page
+     * @param xwikiName the name of the wiki where the uin is installed
      * @param name the name of the UID sequence
      * @param token (optional) the secret token, if necessary
      * @return a list of { 'uin', 'clientId', 'server' } under key 'values' or an error message in key 'error'

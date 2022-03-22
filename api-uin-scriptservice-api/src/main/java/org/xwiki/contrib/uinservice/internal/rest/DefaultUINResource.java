@@ -73,7 +73,7 @@ public class DefaultUINResource extends XWikiResource implements UINResource
     private Logger logger;
 
     @Override
-    public Object getUIN(String xwikiName, String spaceName, String pageName, String name, String token,
+    public Object getUIN(String xwikiName, String name, String token,
         String clientId, String server, String idStr, String simulate)
         throws XWikiRestException
     {
@@ -116,7 +116,7 @@ public class DefaultUINResource extends XWikiResource implements UINResource
     }
 
     @Override
-    public Object getUINList(String xwikiName, String spaceName, String pageName, String name, String token)
+    public Object getUINList(String xwikiName, String name, String token)
         throws XWikiRestException
     {
         logger.trace("getUINList called with name [{}]", name);

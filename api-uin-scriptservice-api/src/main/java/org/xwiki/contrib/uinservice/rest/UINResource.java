@@ -32,7 +32,7 @@ import org.xwiki.stability.Unstable;
  * @version $Id$
  * @since 2.2
  */
-@Path("/wikis/{wikiName}/")
+@Path("/wikis/{wikiName}/uin")
 @Unstable
 public interface UINResource
 {
@@ -51,9 +51,7 @@ public interface UINResource
      * Get the next available UIN.
      * 
      * @param xwikiName the name of the wiki
-     * @param spaceName the spaces
-     * @param pageName the name of the page
-     * @param name the name of the configuration
+     * @param name the name of the uin sequence
      * @param token the secret token
      * @param clientId optional (depending on the used uin manager) the resource requesting the id, e.g. the wiki page
      * @param server optional; an identifier for the calling side
@@ -63,13 +61,11 @@ public interface UINResource
      * @throws XWikiRestException in case of exceptions
      */
     @GET
-    @Path("uin")
+    @Path("/{name}/next")
     @Produces(MediaType.APPLICATION_JSON)
     Object getUIN(
         @PathParam("wikiName") String xwikiName,
-        @PathParam("spaceName") String spaceName,
-        @PathParam("pageName") String pageName,
-        @QueryParam("name") String name,
+        @PathParam("name") String name,
         @QueryParam("token") String token,
         @QueryParam("clientid") String clientId,
         @QueryParam("server") String server,
@@ -94,13 +90,11 @@ public interface UINResource
      * @since 2.3
      */
     @GET
-    @Path("uinlist")
+    @Path("/{name}")
     @Produces(MediaType.APPLICATION_JSON)
     Object getUINList(
         @PathParam("wikiName") String xwikiName,
-        @PathParam("spaceName") String spaceName,
-        @PathParam("pageName") String pageName,
-        @QueryParam("name") String name,
+        @PathParam("name") String name,
         @QueryParam("token") String token
     ) throws XWikiRestException;
 

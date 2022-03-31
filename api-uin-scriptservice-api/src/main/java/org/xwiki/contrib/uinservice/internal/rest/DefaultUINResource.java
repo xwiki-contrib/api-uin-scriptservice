@@ -109,7 +109,7 @@ public class DefaultUINResource extends XWikiResource implements UINResource
         } catch (WebApplicationException we) {
             throw we;
         } catch (Exception e) {
-            logger.info("client [{}] caused error [{}]", server, ExceptionUtils.getRootCause(e).toString());
+            logger.info("client [{}] caused error [{}]", clientId, ExceptionUtils.getRootCause(e).toString());
             throw new XWikiRestException(e.getMessage());
         } finally {
             context.setWikiId(currentWiki);

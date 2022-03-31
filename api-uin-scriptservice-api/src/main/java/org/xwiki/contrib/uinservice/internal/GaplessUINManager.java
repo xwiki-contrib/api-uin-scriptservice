@@ -150,36 +150,31 @@ public class GaplessUINManager extends AbstractUINManager implements UINManager
             return forceUseOfIdInSequence(name, id, client, server, simulate);
         }
 
-        long result = -1;
-        BaseObject sequence = loadSequence(name, clientId);
-        if (id != null) {
-            // check if expected sequence id matches
-            if (sequence == null) {
-                throw new IllegalStateException(
-                    String.format("no sequence for name [%s] and client [%s] found", name, clientId));
-            }
-            long actualId = sequence.getLongValue(GaplessUINSequenceClassInitializer.PROPERTY_UIN);
-            if (actualId != id) {
-                throw new IllegalStateException(
-                    String.format("the id [%d] differs from the expected id [%d]", actualId, id));
-            }
-            result = actualId;
+        UINResult result = null;
+        if (id == null) {
+            result = createNewIdIfAvailable(name, clientId, server, simulate, force);
         } else {
-            // no id given; return existing id if present
-            if (sequence != null) {
-                result = sequence.getLongValue(GaplessUINSequenceClassInitializer.PROPERTY_UIN);
-            } else {
-                // otherwise create new id
-                UINResult newResult = createNextInSequence(name, server, clientId, force, simulate);
-                if (newResult.isError() && !force) {
-                    throw new IllegalStateException(
-                        String.format("sequence [%s] for client [%s] not found", name, clientId));
-                } else {
-                    return newResult;
-                }
-            }
+            result = checkIdMatches(name, clientId, id);
         }
-        return new UINResult(result, null);
+        return result;
+    }
+
+    private UINResult createNewIdIfAvailable(String name, String clientId,
+        String server, boolean force, boolean simulate) throws QueryException, XWikiException
+    {
+        UINResult result;
+        // no id given; return existing id if present
+        BaseObject sequence = loadSequence(name, clientId);
+
+        if (sequence != null) {
+            long newId = sequence.getLongValue(GaplessUINSequenceClassInitializer.PROPERTY_UIN);
+            result = new UINResult(newId, null);
+        } else {
+            // otherwise create new id
+            result = createNextInSequence(name, server, clientId, force, simulate);
+        }
+
+        return result;
     }
 
     @Override
@@ -282,6 +277,22 @@ public class GaplessUINManager extends AbstractUINManager implements UINManager
         }
 
         return sequence;
+    }
+
+    private UINResult checkIdMatches(String name, String client, long id) throws QueryException, XWikiException
+    {
+        // check if expected sequence id matches
+        BaseObject sequence = loadSequence(name, client);
+        if (sequence == null) {
+            throw new IllegalStateException(
+                String.format("no sequence for name [%s] and client [%s] found", name, client));
+        }
+        long newId = sequence.getLongValue(GaplessUINSequenceClassInitializer.PROPERTY_UIN);
+        if (newId != id) {
+            throw new IllegalStateException(
+                String.format("the id [%d] differs from the expected id [%d]", newId, id));
+        }
+        return new UINResult(id, null);
     }
 
     /**

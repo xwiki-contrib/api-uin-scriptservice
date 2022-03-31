@@ -37,6 +37,11 @@ import org.xwiki.stability.Unstable;
 public interface UINResource
 {
     /**
+     * The key to store the retuned uin.
+     */
+    String RESULT_KEY_UIN = "uin";
+
+    /**
      * The key to store error messages.
      */
     String RESULT_KEY_ERROR = "error";
@@ -49,6 +54,10 @@ public interface UINResource
 
     /**
      * Get the next available UIN.
+     * The return value has a {@link #RESULT_KEY_UIN} value of long in case of success
+     * and a {@link #RESULT_KEY_ERROR} value of type string in case of failure.
+     * If force is used, they might be both not be null; the error
+     * reports overwritten uin information in that case.
      * 
      * @param xwikiName the name of the wiki where the uin is installed
      * @param name the name of the uin sequence
@@ -56,6 +65,8 @@ public interface UINResource
      * @param clientId optional (depending on the used uin manager) the resource requesting the id, e.g. the wiki page
      * @param server optional; an identifier for the calling side
      * @param id optional; if present, check if this id is valid
+     * @param force optional; if present and not empty, and an id is given,s
+     *    force using this id in the sequence for this client and server
      * @param simulate optional; if present and not empty, then only simulate the action, do not create a new id
      * @return the next UIN or an error message
      * @throws XWikiRestException in case of exceptions
@@ -70,6 +81,7 @@ public interface UINResource
         @QueryParam("clientid") String clientId,
         @QueryParam("server") String server,
         @QueryParam("id") String id,
+        @QueryParam("force") String force,
         @QueryParam("simulate") String simulate
     ) throws XWikiRestException;
 

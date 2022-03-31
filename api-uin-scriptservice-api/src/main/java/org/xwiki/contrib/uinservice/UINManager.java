@@ -33,6 +33,49 @@ import com.xpn.xwiki.XWikiException;
 public interface UINManager
 {
     /**
+     * Return value in case both an error and an id might be produced.
+     */
+    final class UINResult
+    {
+        private final long uin;
+        private final String errorMessage;
+
+        /**
+         * Constructor of this immutable object.
+         * @param uin the uin to be used
+         * @param error the error, or null if no error
+         */
+        public UINResult(long uin, String error) {
+            this.uin = uin;
+            this.errorMessage = error;
+        }
+
+        /**
+         * The uin of this result.
+         * @return the uin
+         */
+        public long getUin() {
+            return uin;
+        }
+
+        /**
+         * If the result is an error.
+         * @return true, if error is given.
+         */
+        public boolean isError() {
+            return errorMessage != null;
+        }
+
+        /**
+         * The error message.
+         * @return the message for the error
+         */
+        public String getErrorMesssage() {
+            return errorMessage;
+        }
+    }
+
+    /**
      * Create a new UIN configuration.
      *
      * @param name the configuration name
@@ -93,13 +136,16 @@ public interface UINManager
      * @param clientId the client requesting the id
      * @param id optional; if given, check if this id is valid / reserved
      *    and in that case return this id (and not a new one)
+     * @param force if the id is given, enforce this usage for the name
+     *    and optionally client and server
      * @param simulate generate a new id, but do not store it
      * @return the next UIN
      * @throws Exception in case of exceptions
      */
-    default long getNext(String name, String server, String clientId, Long id, boolean simulate) throws Exception
+    default UINResult getNext(String name, String server, String clientId, Long id, boolean force,
+        boolean simulate) throws Exception
     {
-        return getNext(name);
+        return new UINResult(getNext(name), null);
     }
 
     /**

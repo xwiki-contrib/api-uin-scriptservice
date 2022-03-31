@@ -55,8 +55,6 @@ import com.xpn.xwiki.XWikiException;
 @Singleton
 public class DefaultUINResource extends XWikiResource implements UINResource
 {
-    private static final String RESULT_KEY_UIN = "uin";
-
     private static final String INVALID_TOKEN_MESSAGE = "Invalid token for configuration name [%s]";
 
     @Inject
@@ -74,11 +72,11 @@ public class DefaultUINResource extends XWikiResource implements UINResource
 
     @Override
     public Object getUIN(String xwikiName, String name, String token,
-        String clientId, String server, String idStr, String simulate)
+        String clientId, String server, String idStr, String force, String simulate)
         throws XWikiRestException
     {
-        logger.trace("getUIN called with name [{}], clientid [{}], server [{}], id [{}], simulate [{}]",
-            name, clientId, server, idStr, simulate);
+        logger.trace("getUIN called with name [{}], clientid [{}], server [{}], id [{}], force [{}]. simulate [{}]",
+            name, clientId, server, idStr, force, simulate);
         final Map<String, Object> result = new HashMap<String, Object>();
         final XWikiContext context = contextProvider.get();
         final String currentWiki = context.getWikiId();
@@ -95,8 +93,13 @@ public class DefaultUINResource extends XWikiResource implements UINResource
                 if (idStr != null) {
                     givenId = Long.parseLong(idStr, 10);
                 }
-                long newId = manager.getNext(name, server, clientId, givenId, StringUtils.isNotEmpty(simulate));
-                result.put(RESULT_KEY_UIN, newId);
+                UINManager.UINResult newId = manager.getNext(name, server, clientId, givenId,
+                    StringUtils.isNotEmpty(force),
+                    StringUtils.isNotEmpty(simulate));
+                result.put(UINResource.RESULT_KEY_UIN, newId.getUin());
+                if (newId.isError()) {
+                    result.put(UINResource.RESULT_KEY_ERROR, newId.getErrorMesssage());
+                }
             } else {
                 result.put(UINResource.RESULT_KEY_ERROR, String.format(INVALID_TOKEN_MESSAGE, name));
             }

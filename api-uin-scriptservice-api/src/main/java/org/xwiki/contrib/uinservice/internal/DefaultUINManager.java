@@ -97,10 +97,10 @@ public class DefaultUINManager extends AbstractUINManager implements UINManager
     }
 
     @Override
-    public synchronized long getNext(String name, String server, String clientId, Long id, boolean simulate)
-        throws Exception
+    public synchronized UINResult getNext(String name, String server, String clientId, Long id, boolean force,
+        boolean simulate) throws Exception
     {
-        return getManager().getNext(name, server, clientId, id, simulate);
+        return getManager().getNext(name, server, clientId, id, force, simulate);
     }
 
     @Override
@@ -174,7 +174,7 @@ public class DefaultUINManager extends AbstractUINManager implements UINManager
         if (uinManager == null) {
             throw new IllegalStateException(String.format("configured uin manager [%s] not found", name));
         }
-        logger.debug("delegate to UINManager class [{}]", uinManager.getClass().getName());
+        logger.trace("delegate to UINManager class [{}]", uinManager.getClass().getName());
         return uinManager;
     }
 

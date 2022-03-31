@@ -36,8 +36,13 @@ import org.xwiki.contrib.uinservice.DuplicateKeyException;
 import org.xwiki.contrib.uinservice.UINManager;
 import org.xwiki.contrib.uinservice.internal.listeners.GaplessUINManagerConfigClassInitializer;
 import org.xwiki.contrib.uinservice.internal.listeners.GaplessUINSequenceClassInitializer;
+import org.xwiki.model.EntityType;
 import org.xwiki.model.reference.DocumentReference;
+import org.xwiki.model.reference.DocumentReferenceResolver;
+import org.xwiki.model.reference.EntityReference;
+import org.xwiki.model.reference.EntityReferenceProvider;
 import org.xwiki.model.reference.EntityReferenceSerializer;
+import org.xwiki.model.reference.LocalDocumentReference;
 import org.xwiki.model.reference.SpaceReference;
 import org.xwiki.query.Query;
 import org.xwiki.query.QueryException;
@@ -76,6 +81,14 @@ public class GaplessUINManager extends AbstractUINManager implements UINManager
     @Inject
     @Named("compactwiki")
     private EntityReferenceSerializer<String> refToString;
+
+    @Inject
+    @Named("default")
+    private DocumentReferenceResolver<String> stringToRef;
+
+    @Inject
+    @Named("default")
+    private EntityReferenceProvider defaultProvider;
 
     @Override
     public void createConfig(String name, long currentUIN, long increment, String token)
@@ -157,12 +170,12 @@ public class GaplessUINManager extends AbstractUINManager implements UINManager
                 result = sequence.getLongValue(GaplessUINSequenceClassInitializer.PROPERTY_UIN);
             } else {
                 // otherwise create new id
-                Long next = createNextInSequence(name, server, clientId, simulate);
-                if (next == null) {
+                UINResult newResult = createNextInSequence(name, server, clientId, force, simulate);
+                if (newResult.isError() && !force) {
                     throw new IllegalStateException(
                         String.format("sequence [%s] for client [%s] not found", name, clientId));
                 } else {
-                    result = next;
+                    return newResult;
                 }
             }
         }
@@ -263,7 +276,8 @@ public class GaplessUINManager extends AbstractUINManager implements UINManager
         } else {
             XWikiContext context = getContext();
             String docFullName = (String) results.get(0);
-            XWikiDocument sequenceDoc = context.getWiki().getDocument(docFullName, context);
+            DocumentReference docRef = stringToRef.resolve(docFullName);
+            XWikiDocument sequenceDoc = context.getWiki().getDocument(docRef, context);
             sequence = sequenceDoc.getXObject(GaplessUINSequenceClassInitializer.CLASS_REF);
         }
 
@@ -277,16 +291,16 @@ public class GaplessUINManager extends AbstractUINManager implements UINManager
      * @param server the server sending the request
      * @param clientId the client id
      * @param simulate if true, do not save the new id
-     * @return the next id, might be null if there is no sequence for the given name
+     * @return the next id, might be an error if there is no sequence for the given name
      * @throws QueryException
      * @throws XWikiException
      */
-    private Long createNextInSequence(String name, String server, String clientId, boolean simulate)
+    private UINResult createNextInSequence(String name, String server, String clientId, boolean force, boolean simulate)
         throws QueryException, XWikiException
     {
         List<Object> results = loadAllUINsForName(name);
-
         Long nextId = null;
+        String error = null;
         boolean needsCreate;
         if (results.isEmpty()) {
             nextId = 1L;
@@ -310,17 +324,32 @@ public class GaplessUINManager extends AbstractUINManager implements UINManager
         }
 
         if (needsCreate) {
-            BaseObject config = loadConfig();
-            if (config.getIntValue(GaplessUINManagerConfigClassInitializer.PROPERTY_AUTOCREATE) == 0) {
-                throw new IllegalStateException(
-                    String.format("cannot create new sequence for name [%s]", name));
-            }
+            error = createNewSequence(name, simulate, force);
         }
         if (!simulate) {
             createSequenceObject(name, server, clientId, nextId);
         }
 
-        return nextId;
+        return new UINResult(nextId, error);
+    }
+
+    private String createNewSequence(String name, boolean simulate, boolean force) throws XWikiException
+    {
+        BaseObject config = loadConfig();
+        String message = null;
+        boolean cannotCreate = config.getIntValue(GaplessUINManagerConfigClassInitializer.PROPERTY_AUTOCREATE) == 0;
+        if (cannotCreate) {
+            if (force) {
+                message = String.format("use force to create new sequence with name [%s]", name);
+            } else {
+                throw new IllegalStateException(
+                    String.format("cannot create new sequence for name [%s]", name));
+            }
+        }
+        if (!simulate) {
+            createSequenceHomePage(name);
+        }
+        return message;
     }
 
     /**
@@ -349,12 +378,17 @@ public class GaplessUINManager extends AbstractUINManager implements UINManager
             BaseObject uinObjectForId = loadSequenceEntry(name, id);
             String error = null;
 
-            if (!simulate) {
+            if (!simulate && uinObjectForClient != null) {
                 long oldId = uinObjectForClient.getLongValue(GaplessUINSequenceClassInitializer.PROPERTY_UIN);
                 deleteSequenceObject(uinObjectForClient);
                 logger.info("Client [{}] used force to delete its own sequence [{}] on [{}]", client, oldId, name);
             }
             if (uinObjectForId == null) {
+                // check if we need to create a sequence home page
+                List<Object> results = loadAllUINsForName(name);
+                if (results.isEmpty()) {
+                    error = createNewSequence(name, simulate, true);
+                }
                 if (!simulate) {
                     createSequenceObject(name, server, client, id);
                     logger.info("Client [{}] used force to create a new sequence [{}] on [{}]", client, id, name);
@@ -437,6 +471,23 @@ public class GaplessUINManager extends AbstractUINManager implements UINManager
         sequence.setStringValue(GaplessUINSequenceClassInitializer.PROPERTY_SERVER, server);
         newSequenceDoc.setHidden(true);
         wiki.saveDocument(newSequenceDoc, context);
+    }
+
+    private void createSequenceHomePage(String name) throws XWikiException
+    {
+        XWikiContext context = getContext();
+        XWiki wiki = context.getWiki();
+        EntityReference defaultRef = defaultProvider.getDefaultReference(EntityType.DOCUMENT);
+
+        SpaceReference dataSpaceRef = new SpaceReference(context.getWikiId(), DATA_SPACE_NAME, name);
+        DocumentReference newSequenceHomeRef = new DocumentReference(defaultRef.getName(), dataSpaceRef);
+        XWikiDocument newSequenceHomeDoc = wiki.getDocument(newSequenceHomeRef, context);
+        EntityReference sheetClassRef = new LocalDocumentReference("XWiki", "DocumentSheetBinding");
+        int index = newSequenceHomeDoc.createXObject(sheetClassRef, context);
+        BaseObject sequence = newSequenceHomeDoc.getXObject(sheetClassRef, index);
+        sequence.setStringValue("sheet", "UINCode.GaplessUINSheet");
+        newSequenceHomeDoc.setHidden(true);
+        wiki.saveDocument(newSequenceHomeDoc, context);
     }
 
     private static String nameForId(long id)

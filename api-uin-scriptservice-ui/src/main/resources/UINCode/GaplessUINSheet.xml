@@ -20,9 +20,9 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 -->
 
-<xwikidoc version="1.3" reference="UIN.WebHome" locale="">
-  <web>UIN</web>
-  <name>WebHome</name>
+<xwikidoc version="1.3" reference="UINCode.GaplessUINSheet" locale="">
+  <web>UINCode</web>
+  <name>GaplessUINSheet</name>
   <language/>
   <defaultLanguage/>
   <translation>0</translation>
@@ -31,27 +31,60 @@
   <author>xwiki:XWiki.Admin</author>
   <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
   <version>1.1</version>
-  <title>UIN</title>
+  <title/>
   <comment/>
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/2.1</syntaxId>
   <hidden>true</hidden>
   <content>{{velocity}}
-#set($columns = ['doc.name', 'doc.space', 'uin', 'clientId', 'server', 'doc.creationDate', '_actions'])
+#set($columns = ['doc.name', 'uin', 'clientId', 'server', 'doc.creationDate', '_actions'])
 #set($colProps = {
   'doc.name' : { 'type' : 'text' , 'size' : 30, 'link' : 'view' },
-  'doc.space' : { 'type' : 'text', 'link' : 'space' },
   'doc.creationDate' : { 'type' : 'date' },
   '_actions' : { 'actions' : ['edit', 'delete'], 'filterable': false, 'sortable': false }
 })
+#set($spaceRef = $doc.getDocumentReference().getParent())
 #set($options = {
-   "className" : "UINCode.GaplessUINSequenceClass",
-   "translationPrefix" : "UINCode.GaplessUINSequence.overview.",
-   "queryFilters": "",
-   "tagCloud" : false,
-   "rowCount": 25
+   'className' : 'UINCode.GaplessUINSequenceClass',
+   'translationPrefix' : 'UINCode.GaplessUINSequence.overview.',
+   'queryFilters': '',
+   'extraParams': "space=$escapetool.url($services.model.serialize($spaceRef, 'compactwiki'))",
+   'tagCloud' : false,
+   'rowCount': 25
 })
 
 #livetable('UIN' $columns $colProps $options)
 {{/velocity}}</content>
+  <object>
+    <name>UINCode.GaplessUINSheet</name>
+    <number>0</number>
+    <className>XWiki.SheetDescriptorClass</className>
+    <guid>44058db4-f468-4f5a-8f1c-6040196fcc7a</guid>
+    <class>
+      <name>XWiki.SheetDescriptorClass</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <action>
+        <customDisplay/>
+        <disabled>0</disabled>
+        <name>action</name>
+        <number>1</number>
+        <picker>0</picker>
+        <prettyName>Action</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </action>
+    </class>
+    <property>
+      <action>view</action>
+    </property>
+  </object>
 </xwikidoc>

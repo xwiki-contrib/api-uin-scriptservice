@@ -152,7 +152,7 @@ public class GaplessUINManager extends AbstractUINManager implements UINManager
 
         UINResult result = null;
         if (id == null) {
-            result = createNewIdIfAvailable(name, clientId, server, simulate, force);
+            result = createNewIdIfAvailable(name, clientId, server, force, simulate);
         } else {
             result = checkIdMatches(name, clientId, id);
         }
@@ -301,6 +301,7 @@ public class GaplessUINManager extends AbstractUINManager implements UINManager
      * @param name the sequence name
      * @param server the server sending the request
      * @param clientId the client id
+     * @param force force creation of new sequence, even if forbidden by configuration
      * @param simulate if true, do not save the new id
      * @return the next id, might be an error if there is no sequence for the given name
      * @throws QueryException
@@ -394,10 +395,13 @@ public class GaplessUINManager extends AbstractUINManager implements UINManager
                 deleteSequenceObject(uinObjectForClient);
                 logger.info("Client [{}] used force to delete its own sequence [{}] on [{}]", client, oldId, name);
             }
+            // FIXME: too high cyclomatic complexity here ?
             if (uinObjectForId == null) {
                 // check if we need to create a sequence home page
-                List<Object> results = loadAllUINsForName(name);
-                if (results.isEmpty()) {
+                // (which is not necessary if we just have deleted the old sequence)
+                List<Object> results = (uinObjectForClient == null) ? loadAllUINsForName(name) : null;
+                if (results != null && results.isEmpty()) {
+                    logger.info("need to create new sequence [{}] to create uin [{}]", name, id);
                     error = createNewSequence(name, simulate, true);
                 }
                 if (!simulate) {
@@ -493,12 +497,14 @@ public class GaplessUINManager extends AbstractUINManager implements UINManager
         SpaceReference dataSpaceRef = new SpaceReference(context.getWikiId(), DATA_SPACE_NAME, name);
         DocumentReference newSequenceHomeRef = new DocumentReference(defaultRef.getName(), dataSpaceRef);
         XWikiDocument newSequenceHomeDoc = wiki.getDocument(newSequenceHomeRef, context);
-        EntityReference sheetClassRef = new LocalDocumentReference("XWiki", "DocumentSheetBinding");
-        int index = newSequenceHomeDoc.createXObject(sheetClassRef, context);
-        BaseObject sequence = newSequenceHomeDoc.getXObject(sheetClassRef, index);
-        sequence.setStringValue("sheet", "UINCode.GaplessUINSheet");
-        newSequenceHomeDoc.setHidden(true);
-        wiki.saveDocument(newSequenceHomeDoc, context);
+        if (newSequenceHomeDoc.isNew()) {
+            EntityReference sheetClassRef = new LocalDocumentReference("XWiki", "DocumentSheetBinding");
+            int index = newSequenceHomeDoc.createXObject(sheetClassRef, context);
+            BaseObject sequence = newSequenceHomeDoc.getXObject(sheetClassRef, index);
+            sequence.setStringValue("sheet", "UINCode.GaplessUINSheet");
+            newSequenceHomeDoc.setHidden(true);
+            wiki.saveDocument(newSequenceHomeDoc, context);
+        }
     }
 
     private static String nameForId(long id)

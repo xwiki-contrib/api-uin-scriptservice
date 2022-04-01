@@ -27,4 +27,11 @@
 <suppressions>
   <!-- we really do have more than 7 parameters in the REST API, including optionals -->
   <suppress checks="ParameterNumber" files="\w*UINResource.java" />
+
+  <!-- the "getNext" method has already split into many small pieces
+      that it is hard to follow; splitting the "forceID..." even more
+      is unlikely to improve things
+    -->
+  <suppress checks="CyclomaticComplexity" files="src/main/java/org/xwiki/contrib/uinservice/internal/GaplessUINManager.java" lines="367-423" />
+
 </suppressions>

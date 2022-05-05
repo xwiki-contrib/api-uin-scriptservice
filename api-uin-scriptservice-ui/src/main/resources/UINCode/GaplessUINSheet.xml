@@ -38,6 +38,7 @@
   <hidden>true</hidden>
   <content>{{velocity}}
 #set ($displayDocExtra = false)
+#set ($discard = $xwiki.ssx.use('UINCode.GaplessUINLivetableResults'))
 #set($columns = ['doc.name', 'uin', 'clientId', 'server', 'doc.creationDate', '_actions'])
 #set($colProps = {
   'doc.name' : { 'type' : 'text' , 'size' : 30, 'link' : 'view' },

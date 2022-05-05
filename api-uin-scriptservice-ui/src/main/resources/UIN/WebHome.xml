@@ -31,25 +31,30 @@
   <author>xwiki:XWiki.Admin</author>
   <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
   <version>1.1</version>
-  <title>UIN</title>
+  <title>Unique Identification Number - Configuration</title>
   <comment/>
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/2.1</syntaxId>
   <hidden>true</hidden>
   <content>{{velocity}}
+#set ($displayDocExtra = false)
 #set($columns = ['doc.name', 'doc.space', 'uin', 'clientId', 'server', 'doc.creationDate', '_actions'])
 #set($colProps = {
   'doc.name' : { 'type' : 'text' , 'size' : 30, 'link' : 'view' },
   'doc.space' : { 'type' : 'text', 'link' : 'space' },
+  'clientId' : { 'type' : 'text', 'link' : 'field' },
   'doc.creationDate' : { 'type' : 'date' },
   '_actions' : { 'actions' : ['edit', 'delete'], 'filterable': false, 'sortable': false }
 })
 #set($options = {
-   "className" : "UINCode.GaplessUINSequenceClass",
-   "translationPrefix" : "UINCode.GaplessUINSequence.overview.",
-   "queryFilters": "",
-   "tagCloud" : false,
-   "rowCount": 25
+   'className' : 'UINCode.GaplessUINSequenceClass',
+   'translationPrefix' : 'UINCode.GaplessUINSequence.overview.',
+   'resultPage' : 'UINCode.GaplessUINLivetableResults',
+   'queryFilters' : '',
+   'selectedColumn' : 'doc.creationDate',
+   'defaultOrder' : 'desc',
+   'tagCloud' : false,
+   'rowCount': 25
 })
 
 #livetable('UIN' $columns $colProps $options)

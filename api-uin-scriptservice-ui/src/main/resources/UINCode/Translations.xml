@@ -36,11 +36,12 @@
   <minorEdit>false</minorEdit>
   <syntaxId>plain/1.0</syntaxId>
   <hidden>true</hidden>
-  <content>UINCode.GaplessUINSequence.overview.doc.name=Name
+  <content>UINCode.GaplessUINSequence.overview.doc.name=UIN Server Reference
+UINCode.GaplessUINSequence.overview.doc.title=UIN Server Reference
 UINCode.GaplessUINSequence.overview.doc.space=Sequence
 UINCode.GaplessUINSequence.overview.uin=UIN
-UINCode.GaplessUINSequence.overview.server=Server
-UINCode.GaplessUINSequence.overview.clientId=Client
+UINCode.GaplessUINSequence.overview.server=UIN Requested by
+UINCode.GaplessUINSequence.overview.clientId=Page Unique Identifier
 UINCode.GaplessUINSequence.overview.doc.creationDate=Created on
 UINCode.GaplessUINSequence.overview._actions=Actions
 UINCode.GaplessUINSequence.overview.emptyvalue=</content>

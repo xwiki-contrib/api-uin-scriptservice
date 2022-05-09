@@ -20,44 +20,30 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 -->
 
-<xwikidoc version="1.3" reference="UINCode.Translations" locale="">
+<xwikidoc version="1.3" reference="UINCode.GaplessUINSeqTemplate" locale="">
   <web>UINCode</web>
-  <name>Translations</name>
+  <name>GaplessUINSeqTemplate</name>
   <language/>
-  <defaultLanguage>en</defaultLanguage>
+  <defaultLanguage/>
   <translation>0</translation>
   <creator>xwiki:XWiki.Admin</creator>
   <parent>UINCode.WebHome</parent>
   <author>xwiki:XWiki.Admin</author>
   <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
   <version>1.1</version>
-  <title>Translations</title>
+  <title>GaplessUINSequence List Table</title>
   <comment/>
   <minorEdit>false</minorEdit>
-  <syntaxId>plain/1.0</syntaxId>
+  <syntaxId>xwiki/2.1</syntaxId>
   <hidden>true</hidden>
-  <content>UINCode.GaplessUINSequence.overview.doc.name=UIN Server Reference
-UINCode.GaplessUINSequence.overview.doc.title=UIN Server Reference
-UINCode.GaplessUINSequence.overview.doc.space=Sequence
-UINCode.GaplessUINSequence.overview.uin=UIN
-UINCode.GaplessUINSequence.overview.server=UIN Requested by
-UINCode.GaplessUINSequence.overview.clientId=Page Unique Identifier
-UINCode.GaplessUINSequence.overview.doc.creationDate=Created on
-UINCode.GaplessUINSequence.overview._actions=Actions
-UINCode.GaplessUINSequence.overview.emptyvalue=
-
-UINCode.GaplessUINSequence.template.name=New UIN Sequence
-UINCode.GaplessUINSequence.template.description=Creates a new UIN sequence 
-
-UINCode.GaplessUINNumber.template.name=New UIN Number
-UINCode.GaplessUINNumber.template.description=Allows to create a new number for an UIN sequence. Useless except if created inside an UIN Sequence.</content>
+  <content/>
   <object>
-    <name>UINCode.Translations</name>
+    <name>UINCode.GaplessUINSeqTemplate</name>
     <number>0</number>
-    <className>XWiki.TranslationDocumentClass</className>
-    <guid>3670a131-6db2-4d19-84cb-8020ae94b6ea</guid>
+    <className>XWiki.DocumentSheetBinding</className>
+    <guid>26948230-577f-49e6-8727-3b4f20c10b66</guid>
     <class>
-      <name>XWiki.TranslationDocumentClass</name>
+      <name>XWiki.DocumentSheetBinding</name>
       <customClass/>
       <customMapping/>
       <defaultViewSheet/>
@@ -65,25 +51,34 @@ UINCode.GaplessUINNumber.template.description=Allows to create a new number for 
       <defaultWeb/>
       <nameField/>
       <validationScript/>
-      <scope>
+      <sheet>
         <cache>0</cache>
+        <classname/>
+        <customDisplay/>
         <disabled>0</disabled>
-        <displayType>select</displayType>
+        <displayType>input</displayType>
+        <hint/>
+        <idField/>
         <multiSelect>0</multiSelect>
-        <name>scope</name>
+        <name>sheet</name>
         <number>1</number>
-        <prettyName>Scope</prettyName>
+        <picker>1</picker>
+        <prettyName>Sheet</prettyName>
         <relationalStorage>0</relationalStorage>
         <separator> </separator>
-        <separators>|, </separators>
-        <size>1</size>
+        <separators/>
+        <size>30</size>
+        <sort>none</sort>
+        <sql/>
         <unmodifiable>0</unmodifiable>
-        <values>GLOBAL|WIKI|USER|ON_DEMAND</values>
-        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
-      </scope>
+        <validationMessage/>
+        <validationRegExp/>
+        <valueField/>
+        <classType>com.xpn.xwiki.objects.classes.PageClass</classType>
+      </sheet>
     </class>
     <property>
-      <scope>WIKI</scope>
+      <sheet>UINCode.GaplessUINSheet</sheet>
     </property>
   </object>
 </xwikidoc>

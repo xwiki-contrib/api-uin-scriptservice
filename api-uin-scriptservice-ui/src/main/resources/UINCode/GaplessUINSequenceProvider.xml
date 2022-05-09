@@ -261,7 +261,7 @@
       <spaces/>
     </property>
     <property>
-      <template>UINCode.GaplessUINSheet</template>
+      <template>UINCode.GaplessUINTemplate</template>
     </property>
     <property>
       <terminal>0</terminal>

@@ -37,6 +37,7 @@
   <syntaxId>xwiki/2.1</syntaxId>
   <hidden>true</hidden>
   <content>{{include reference="XWiki.LiveTableResultsMacros" /}}
+{{include reference="UINCode.GaplessUINLivetableResultsMacros" /}}
 {{velocity wiki="false"}}
 ## the $extra variable is passed to the call to #gridresultwithfilter below and is used to perform some default
 ## filtering on the LiveTable data even when the user has not performed any column filtering yet.
@@ -51,23 +52,8 @@
 #addLivetableLocationFilter($extra, $params, $!request.location)
 
 #macro(addClientLinks $maps)
-  #set ($guidPattern = $regextool.compile('^\p{XDigit}{8}-\p{XDigit}{4}-\p{XDigit}{4}-\p{XDigit}{4}-\p{XDigit}{12}$'))
-  #set ($guidQueryStr = "from Space space where doc.space = space.reference AND (doc.name = :guid or doc.name = 'WebHome' and space.name = :guid)" )
   #foreach($entry in $maps.rows)
-    #set ($client = $entry.clientId)
-    #set ($clientUrl = $null)
-    #set ($clientPageName = '')
-    #if ($guidPattern.matcher($client).matches())
-      #set ($pages = $services.query.xwql($guidQueryStr).bindValue('guid', $client).execute())
-      #if ($pages.size() &gt; 0)
-        #set ($clientPageName = $pages.get(0))
-      #end
-    #else
-      #set ($clientPageName = $client)
-    #end
-    #if ($clientPageName != '' &amp;&amp; $xwiki.exists($clientPageName))
-      #set ($clientUrl = $xwiki.getURL($clientPageName))
-    #end
+    #setClientLink ($entry.clientId $clientUrl)
     #set ($discard = $entry.put('clientId_url', $clientUrl))
   #end
 #end
@@ -79,7 +65,6 @@
   #gridresultwithfilter_buildJSON("$!request.classname" $request.collist.split(',') '' "${extra}" $params $map)
   ## now adjust it by add custom URL to clients to map entries
   #addClientLinks($map)
-  ###set($discard = $map)
   #jsonResponse($map)
 #end
 {{/velocity}}</content>

@@ -36,7 +36,10 @@
   <minorEdit>false</minorEdit>
   <syntaxId>plain/1.0</syntaxId>
   <hidden>true</hidden>
-  <content>UINCode.GaplessUINSequence.overview.doc.name=UIN Server Reference
+  <content>UINCode.GaplessUINSequenceClass_server=UIN Requested by
+UINCode.GaplessUINSequenceClass_clientId=Page Unique Identifier
+
+UINCode.GaplessUINSequence.overview.doc.name=UIN Server Reference
 UINCode.GaplessUINSequence.overview.doc.title=UIN Server Reference
 UINCode.GaplessUINSequence.overview.doc.space=Sequence
 UINCode.GaplessUINSequence.overview.uin=UIN

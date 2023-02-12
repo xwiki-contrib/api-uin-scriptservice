@@ -195,6 +195,7 @@ public class GaplessUINManager extends AbstractUINManager implements UINManager
             + " order by uin.value";
 
         Query query = queries.createQuery(hqlQuery, Query.HQL)
+            .setWiki(context.getWikiId())
             .bindValue("dataSpace2", refToString.serialize(dataSpaceRef))
             .bindValue("className", GaplessUINSequenceClassInitializer.CONFIG_CLASS_FULLNAME)
             .bindValue("uinName", GaplessUINSequenceClassInitializer.PROPERTY_UIN)
@@ -229,9 +230,10 @@ public class GaplessUINManager extends AbstractUINManager implements UINManager
         String queryStr = QUERY_BY_NAME_PREFIX + "and sequence."
             + GaplessUINSequenceClassInitializer.PROPERTY_CLIENT + " = :client";
         SpaceReference dataSpaceRef = new SpaceReference(context.getWikiId(), DATA_SPACE_NAME, name);
-
+        String spaceRefStr = refToString.serialize(dataSpaceRef);
         Query query = queries.createQuery(queryStr, Query.XWQL)
-            .bindValue(QUERY_NAME_PARAM, refToString.serialize(dataSpaceRef))
+            .setWiki(context.getWikiId())
+            .bindValue(QUERY_NAME_PARAM, spaceRefStr)
             .bindValue("client", clientId);
 
         return singleResult(query);
@@ -253,9 +255,10 @@ public class GaplessUINManager extends AbstractUINManager implements UINManager
         String queryStr = QUERY_BY_NAME_PREFIX + " and sequence."
             + GaplessUINSequenceClassInitializer.PROPERTY_UIN + " = :id";
         SpaceReference dataSpaceRef = new SpaceReference(context.getWikiId(), DATA_SPACE_NAME, name);
-
+        String spaceRefStr = refToString.serialize(dataSpaceRef);
         Query query = queries.createQuery(queryStr, Query.XWQL)
-            .bindValue(QUERY_NAME_PARAM, refToString.serialize(dataSpaceRef))
+            .setWiki(context.getWikiId())
+            .bindValue(QUERY_NAME_PARAM, spaceRefStr)
             .bindValue("id", id);
 
         return singleResult(query);
@@ -267,11 +270,13 @@ public class GaplessUINManager extends AbstractUINManager implements UINManager
 
         BaseObject sequence;
         if (results.isEmpty()) {
+            logger.trace("query [{}] returned no result; params are [{}]", query.getStatement(),
+                query.getNamedParameters());
             sequence = null;
         } else {
             XWikiContext context = getContext();
             String docFullName = (String) results.get(0);
-            DocumentReference docRef = stringToRef.resolve(docFullName);
+            DocumentReference docRef = stringToRef.resolve(docFullName, context.getWikiReference());
             XWikiDocument sequenceDoc = context.getWiki().getDocument(docRef, context);
             sequence = sequenceDoc.getXObject(GaplessUINSequenceClassInitializer.CLASS_REF);
         }
@@ -464,6 +469,7 @@ public class GaplessUINManager extends AbstractUINManager implements UINManager
         SpaceReference dataSpaceRef = new SpaceReference(context.getWikiId(), DATA_SPACE_NAME, name);
 
         Query query = queries.createQuery(queryStr, Query.XWQL)
+            .setWiki(context.getWikiId())
             .bindValue("dataSpace", refToString.serialize(dataSpaceRef));
 
         return query.execute();
